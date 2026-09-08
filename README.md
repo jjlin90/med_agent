@@ -160,16 +160,21 @@ START → ingest_uploads（解析 UI 的 upload_files，按 thread 隔离）
 | 工具约束 | 无任何诊断/开药工具；科室推荐为确定性规则 |
 | 输出审核 | 后置违禁词检测（"确诊为你得了…/建议服用…mg"），命中整句剔除并补风险提示 |
 | 免责声明 | 回答末尾强制附带 |
-| 隐私 | 日志默认不落盘；显式开启后仅保存最小化、脱敏且 Fernet 加密的记录；禁止用于训练 |
+| 隐私 | 普通运行日志脱敏并轮转；会话审计日志默认不落盘，显式开启后仅保存最小化、脱敏且 Fernet 加密的记录；禁止用于训练 |
 
 ## 配置（.env）
 
 复制 `.env.example` 为 `.env` 后填写：`MODEL_API_BASE_URL / OPENAI_API_KEY / BASE_LLM /
 EMBEDDING_MODEL / MSD_DATA_PATH / ENABLE_RERANK / MAX_AGENT_TOOL_ROUNDS` 等。`.env` 含密钥，不要提交到版本库。
 
+普通运行日志默认写入项目根目录下的 `logs/med_agent.log`，单文件默认 5 MB、保留 5 个备份，
+并在写入前遮盖常见直接标识符。可通过 `ENABLE_FILE_LOG / LOG_PATH / LOG_LEVEL /
+LOG_MAX_BYTES / LOG_BACKUP_COUNT` 调整。它不会记录原始用户输入；需要会话审计时，另行显式开启
+`ENABLE_SECURE_SESSION_LOG=true`，审计记录会加密写入 `data/sessions.enc`。
+
 ## 公开发布前检查
 
-`data/` 中的运行数据、`user_upload/`、`vectorstore/`、`output/` 和本地 `.env`
+`data/` 中的运行数据、`user_upload/`、`vectorstore/`、`output/`、`logs/` 和本地 `.env`
 已默认排除在 Git 之外。每次提交前运行：
 
 ```powershell

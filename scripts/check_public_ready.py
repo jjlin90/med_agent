@@ -18,6 +18,7 @@ SENSITIVE_PATHS = (
     "vectorstore",
     "user_upload",
     "output",
+    "logs",
 )
 ALLOWED_PLACEHOLDERS = {"user_upload/.gitkeep"}
 RULES = {

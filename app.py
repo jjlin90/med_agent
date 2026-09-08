@@ -13,8 +13,11 @@ import uuid
 
 import streamlit as st
 
+from base.logging_config import configure_logging
 from medical.compliance import DISCLAIMER
 from medical.secure_store import log_session
+
+configure_logging()
 
 st.set_page_config(page_title="健康科普助手", page_icon="🏥", layout="wide")
 

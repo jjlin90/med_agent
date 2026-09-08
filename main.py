@@ -12,8 +12,10 @@ import argparse
 import sys
 import uuid
 
-# 与通用智能体项目一致：LangGraph Server 从 main.py:agent 加载统一入口。
+from base.logging_config import configure_logging
 from medical.graph import graph as agent  # noqa: F401 -- LangGraph Server 公开入口
+
+configure_logging()
 
 # Windows 控制台中文输出
 if sys.stdout.encoding and sys.stdout.encoding.lower() != "utf-8":

@@ -2,7 +2,10 @@
 
 from fastapi import FastAPI
 
+from base.logging_config import configure_logging
 from medical.compliance import DISCLAIMER
+
+configure_logging()
 
 app = FastAPI(title="医疗健康科普 Agent 扩展接口", version="1.0.0")
 

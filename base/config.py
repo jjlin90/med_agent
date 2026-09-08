@@ -47,6 +47,13 @@ SECURE_LOG_PATH = _resolve_in_root(
 )
 ENABLE_SECURE_SESSION_LOG = os.getenv("ENABLE_SECURE_SESSION_LOG", "false").lower() == "true"
 
+# 普通运行日志：仅记录运行状态和异常，不记录原始用户输入。
+ENABLE_FILE_LOG = os.getenv("ENABLE_FILE_LOG", "true").lower() == "true"
+LOG_PATH = _resolve_in_root(os.getenv("LOG_PATH", "logs/med_agent.log"), "logs/med_agent.log")
+LOG_LEVEL = os.getenv("LOG_LEVEL", "INFO").upper()
+LOG_MAX_BYTES = max(1024, int(os.getenv("LOG_MAX_BYTES", str(5 * 1024 * 1024))))
+LOG_BACKUP_COUNT = max(1, int(os.getenv("LOG_BACKUP_COUNT", "5")))
+
 # ==================== 模型配置 ====================
 _api_key = os.getenv("OPENAI_API_KEY")  # API Key（内部使用）
 MODEL_API_BASE_URL = os.getenv("MODEL_API_BASE_URL")  # OpenAI 兼容接口地址
