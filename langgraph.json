@@ -1,0 +1,10 @@
+{
+  "dependencies": ["."],
+  "graphs": {
+    "agent": "./main.py:agent"
+  },
+  "http": {
+    "app": "./medical/api.py:app"
+  },
+  "env": ".env"
+}

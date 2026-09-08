@@ -1,0 +1,53 @@
+# Secrets and local configuration
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# Private and generated medical data
+data/*
+!data/eval_dataset.json
+!data/README.md
+!data/.gitkeep
+user_upload/*
+!user_upload/.gitkeep
+vectorstore/
+output/
+*.sqlite*
+*.enc
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+.pytest_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Frontend
+sub_projects/agent-chat-ui/node_modules/
+sub_projects/agent-chat-ui/.next/
+sub_projects/agent-chat-ui/.next-build/
+sub_projects/agent-chat-ui/out/
+*.tsbuildinfo
+
+# Tool and editor state
+.streamlit/
+.vscode/
+.idea/
+.chart-data-*/
+.codex-ppt-build/
+.langgraph_api/
+.mimosa/
+.workbuddy/
+review_artifacts/
+
+# Local notes and backups
+*_面试全解.md
+*.bak_*
+.DS_Store
+Thumbs.db

@@ -1,0 +1,3 @@
+-r requirements.txt
+langgraph-cli[inmem]
+ruff==0.12.12
