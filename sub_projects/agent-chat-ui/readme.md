@@ -34,6 +34,8 @@ pnpm dev
 - 仅允许上传 `.txt`、`.md`、`.csv` 文本资料，总大小不超过 10 MB；
 - 页面常驻医疗免责声明，后端仍会对每条回答执行独立合规审核。
 
-可在 `src/config.ts` 中调整应用名称、默认后端地址和默认 Graph ID。
+应用名称和免责声明在 `src/config.ts` 中调整。后端地址与 Graph ID 优先通过
+`.env` 中的 `NEXT_PUBLIC_API_URL` 和 `NEXT_PUBLIC_ASSISTANT_ID` 配置；
+代码中的本地默认值位于 `src/providers/Thread.tsx` 与 `src/providers/Stream.tsx`。
 
 > 本 AI 仅提供健康科普参考，不构成医疗建议，身体不适请前往正规医疗机构就诊。

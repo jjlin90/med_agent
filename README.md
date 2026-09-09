@@ -25,7 +25,7 @@ python main.py --session demo1
 
 # 3. 评估（高危拦截 / 症状抽取 P-R-F1 / 科室推荐）
 python evaluate.py            # 快速评估
-python evaluate.py --full     # 追加全流程评估（高危图拦截 + 知识覆盖/幻觉代理指标）
+python evaluate.py --full     # 追加高危图拦截、知识覆盖/幻觉代理指标与 Agentic 轨迹评估
 # 也可通过统一入口运行
 python main.py --eval
 python main.py --eval --full
@@ -73,6 +73,9 @@ med_agent/
 ├── data/
 │   ├── eval_dataset.json      # 测试数据集（普通/复杂/高危/特殊人群 case）
 │   └── checkpoints.sqlite     # LangGraph 会话持久化（按 thread_id 隔离）
+├── docs/
+│   ├── architecture/          # 双模式流程与 Agentic 工具循环图
+│   └── evaluation-baseline.md # 可公开复现的合成开发集评估基线
 ├── base/config.py             # 配置（模型、路径、RAG 参数）
 ├── conn/llm.py                # LLM / BGE-M3 嵌入（SiliconFlow OpenAI 兼容接口）
 ├── medical/
@@ -97,8 +100,9 @@ med_agent/
 ```
 START → ingest_uploads（解析 UI 的 upload_files，按 thread 隔离）
           → input_guard（兼容纯文本与 LangGraph content blocks）
+          ├─ 危急信号 → emergency（零模型 120/急诊提示+免责声明）→ END
           ├─ 高危(求诊断/求开药) → refuse（风险提示+替代帮助+免责声明）→ END
-          └─ 正常 → extract（症状实体抽取→State）
+          └─ 其他请求 → extract（症状实体抽取→State）
                     → classify_task
                       ├─ fast_rag：普通科普首步固定检索，仅开放检索/科室 2 个工具
                       └─ agentic：复杂任务首步评估信息缺口，在 8 个白名单工具内编排
@@ -108,7 +112,13 @@ START → ingest_uploads（解析 UI 的 upload_files，按 thread 隔离）
 
 - **自定义 State**：除用户画像外，另保存 `current_turn_symptoms / task_mode / task_goal /
   agent_tool_trace / attempted_queries / agent_plan / asked_questions`；模式路由使用本轮症状，避免历史状态污染；
-- **会话隔离**：按 `thread_id` 持久化（SQLite checkpoint），多轮问诊上下文可续。
+- **会话隔离**：CLI/Streamlit 本地运行时使用 SQLite checkpoint 按 `thread_id` 持久化；
+  `langgraph dev` 下的 Agent Server/Studio 使用服务端运行时管理的 thread/checkpoint。
+
+架构图：
+
+- [双模式问答流程](docs/architecture/med_agent_双模式问答流程.svg)
+- [Agentic 工具循环与能力边界](docs/architecture/med_agent_agentic_loop_真Agent能力.svg)
 
 ### 为什么现在需要 Agent
 
@@ -145,8 +155,8 @@ START → ingest_uploads（解析 UI 的 upload_files，按 thread 隔离）
 
 ## 检索方案（RAG）
 
-1. **切片**：按主题 h1/h2/h3 章节层级切分，块大小 512-1024 字符，切片携带标题上下文；
-2. **嵌入**：BGE-M3（`BAAI/bge-m3`，SiliconFlow API），医学语料召回优于通用 embedding；
+1. **切片**：按主题 h1/h2/h3 章节层级切分，目标块大小 400-1024 字符；无法继续合并的短小节可低于 400 字符，长段落保留约 80 字符重叠；
+2. **嵌入**：使用 BGE-M3（`BAAI/bge-m3`，SiliconFlow API）生成稠密向量；当前项目尚未完成与通用 embedding 的同集对比实验；
 3. **向量库**：Chroma（原型够用；生产可平移 Milvus，检索层接口不变）；
 4. **混合检索**：向量召回 + jieba 分词 BM25 关键词召回 → RRF 融合；
 5. **重排**：BGE-reranker-v2-m3（`.env` 中 `ENABLE_RERANK=true` 开启，失败自动降级）。
@@ -185,6 +195,13 @@ python -m unittest discover -s tests -v
 ```
 
 需调用真实模型和本地索引时，可另行执行 `python scripts/smoke_e2e.py`。
+
+## 评估口径
+
+- `python -m unittest discover -s tests -v` 当前执行 75 项不依赖真实外部模型的自动化测试；
+- `python evaluate.py` 使用合成开发集执行快速回归，当前覆盖 13 条高危规则、7 条症状抽取和 14 条科室路由；
+- `python evaluate.py --full` 会调用真实模型和本地知识库，追加知识覆盖与 9 条 Agentic 场景轨迹评估；
+- 小样本开发集结果仅用于回归，不能解释为临床准确率或线上生产效果。公开基线见 [评估基线](docs/evaluation-baseline.md)。
 
 ## 开源协议
 

@@ -1,0 +1,236 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 920 1480" font-family="'Microsoft YaHei','PingFang SC',sans-serif">
+  <defs>
+    <marker id="arr" markerWidth="10" markerHeight="10" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#8899aa"/></marker>
+    <marker id="arrR" markerWidth="10" markerHeight="10" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#e57373"/></marker>
+    <marker id="arrG" markerWidth="10" markerHeight="10" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#81c784"/></marker>
+    <marker id="arrP" markerWidth="10" markerHeight="10" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#c47ad0"/></marker>
+    <linearGradient id="titleBg" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#16213e"/><stop offset="1" stop-color="#1a3a5e"/></linearGradient>
+    <linearGradient id="fastBg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1a2a4a"/><stop offset="1" stop-color="#162038"/></linearGradient>
+    <linearGradient id="agBg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2a1a4a"/><stop offset="1" stop-color="#221536"/></linearGradient>
+    <linearGradient id="safeBg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3a1a1a"/><stop offset="1" stop-color="#2a1212"/></linearGradient>
+    <linearGradient id="outBg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1a3a2a"/><stop offset="1" stop-color="#122a1c"/></linearGradient>
+  </defs>
+
+  <rect x="0" y="0" width="920" height="1480" fill="#12121f"/>
+
+  <!-- Title -->
+  <rect x="20" y="16" width="880" height="56" rx="12" fill="url(#titleBg)" stroke="#334466" stroke-width="1"/>
+  <text x="460" y="50" text-anchor="middle" fill="#e0e8f0" font-size="22" font-weight="900">med_agent 双模式问答流程</text>
+  <text x="460" y="68" text-anchor="middle" fill="#9ab0d0" font-size="11">fast_rag（普通科普）· agentic（复杂任务）· 双层合规审核</text>
+
+  <!-- User Query -->
+  <rect x="370" y="92" width="180" height="36" rx="9" fill="#2d3561" stroke="#5b6bb7" stroke-width="1.5"/>
+  <text x="460" y="115" text-anchor="middle" fill="#c8d4ef" font-size="13" font-weight="700">用户提问 / 上传</text>
+  <line x1="460" y1="128" x2="460" y2="152" stroke="#556677" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- ingest_uploads -->
+  <rect x="290" y="152" width="340" height="34" rx="9" fill="#1f2a3a" stroke="#7a8ba8" stroke-width="1"/>
+  <text x="460" y="174" text-anchor="middle" fill="#a8b8d0" font-size="11.5" font-weight="700">ingest_uploads：白名单 + 通用文件名 + 直接标识脱敏 + thread 隔离</text>
+  <line x1="460" y1="186" x2="460" y2="206" stroke="#556677" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- Safety Layer -->
+  <rect x="20" y="206" width="880" height="160" rx="14" fill="url(#safeBg)" stroke="#c44a4a" stroke-width="1.5" stroke-dasharray="6,3"/>
+  <text x="36" y="228" fill="#ff8888" font-size="13" font-weight="900">安全闸门 input_guard（规则先于模型，危急优先路由）</text>
+
+  <rect x="40" y="244" width="240" height="56" rx="10" fill="#3a1a1a" stroke="#e57373" stroke-width="1.5"/>
+  <text x="160" y="268" text-anchor="middle" fill="#ffaaaa" font-size="12" font-weight="700">求诊断 / 求开药</text>
+  <text x="160" y="287" text-anchor="middle" fill="#ffaaaa" font-size="11">→ refuse 合规拒答</text>
+
+  <rect x="340" y="244" width="240" height="56" rx="10" fill="#3a1a1a" stroke="#e57373" stroke-width="1.5"/>
+  <text x="460" y="268" text-anchor="middle" fill="#ffaaaa" font-size="12" font-weight="700">危急信号</text>
+  <text x="460" y="287" text-anchor="middle" fill="#ffaaaa" font-size="11">→ emergency 120/急诊（零模型）</text>
+
+  <rect x="640" y="244" width="240" height="56" rx="10" fill="#1a3a2a" stroke="#81c784" stroke-width="1.5"/>
+  <text x="760" y="268" text-anchor="middle" fill="#a8e6b8" font-size="12" font-weight="700">正常请求</text>
+  <text x="760" y="287" text-anchor="middle" fill="#a8e6b8" font-size="11">→ extract 抽取症状</text>
+
+  <line x1="160" y1="300" x2="160" y2="326" stroke="#e57373" stroke-width="1.5" marker-end="url(#arrR)"/>
+  <line x1="460" y1="300" x2="460" y2="326" stroke="#e57373" stroke-width="1.5" marker-end="url(#arrR)"/>
+  <line x1="760" y1="300" x2="760" y2="326" stroke="#81c784" stroke-width="1.5" marker-end="url(#arrG)"/>
+
+  <rect x="40" y="326" width="240" height="24" rx="6" fill="#2a1212" stroke="#884444" stroke-width="1"/>
+    <text x="160" y="343" text-anchor="middle" fill="#cc8888" font-size="10">合规拒答 + 替代帮助 + 免责声明</text>
+
+  <rect x="340" y="326" width="240" height="24" rx="6" fill="#2a1212" stroke="#884444" stroke-width="1"/>
+  <text x="460" y="343" text-anchor="middle" fill="#cc8888" font-size="10">提示拨打 120 / 急诊</text>
+
+  <rect x="640" y="326" width="240" height="24" rx="6" fill="#1a2a3a" stroke="#5b7ba8" stroke-width="1"/>
+  <text x="760" y="343" text-anchor="middle" fill="#a8c0e0" font-size="10">症状 / 时长 / 病史 → State</text>
+
+  <line x1="760" y1="350" x2="760" y2="378" stroke="#81c784" stroke-width="1.5" marker-end="url(#arrG)"/>
+
+  <!-- classify_task -->
+  <rect x="310" y="378" width="300" height="48" rx="10" fill="#1a2a3a" stroke="#5b6bb7" stroke-width="1.5"/>
+  <text x="460" y="400" text-anchor="middle" fill="#c8d4ef" font-size="13" font-weight="700">classify_task 判定 task_goal / task_mode</text>
+  <text x="460" y="416" text-anchor="middle" fill="#8a9ab8" font-size="10">rule-based：goal + 5 条复杂任务正则</text>
+
+  <line x1="460" y1="426" x2="460" y2="444" stroke="#556677" stroke-width="1.5"/>
+  <line x1="460" y1="444" x2="180" y2="470" stroke="#5a8ad0" stroke-width="1.8" marker-end="url(#arr)"/>
+  <line x1="460" y1="444" x2="740" y2="470" stroke="#c47ad0" stroke-width="1.8" marker-end="url(#arrP)"/>
+
+  <text x="180" y="458" fill="#7aa6d0" font-size="12" font-weight="900">fast_rag</text>
+  <text x="180" y="472" fill="#5a7a98" font-size="10">（普通科普，最小权限 2 工具）</text>
+  <text x="740" y="458" fill="#c47ad0" font-size="12" font-weight="900">agentic</text>
+  <text x="740" y="472" fill="#985a98" font-size="10">（复杂任务，≤6 轮编排）</text>
+
+  <!-- ============ Left: fast_rag ============ -->
+  <rect x="20" y="490" width="430" height="600" rx="14" fill="url(#fastBg)" stroke="#5a8ad0" stroke-width="1.5"/>
+  <text x="40" y="514" fill="#9ac4f0" font-size="13" font-weight="900">fast_rag 路径</text>
+  <text x="40" y="530" fill="#5a7a98" font-size="10">首轮强制检索 · 后续仅可继续检索/问科室或回答</text>
+
+  <rect x="50" y="544" width="370" height="42" rx="10" fill="#2a3a5a" stroke="#7aa6d0" stroke-width="1.5"/>
+  <text x="235" y="562" text-anchor="middle" fill="#c8e0f8" font-size="12" font-weight="700">Agent：tool_choice=medical_rag_search</text>
+  <text x="235" y="578" text-anchor="middle" fill="#8aa8c8" font-size="10">代码级锁定，不靠 Prompt</text>
+
+  <line x1="235" y1="586" x2="235" y2="608" stroke="#556677" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <rect x="50" y="608" width="370" height="180" rx="10" fill="#1f2a3a" stroke="#7a8ba8" stroke-width="1"/>
+  <text x="235" y="628" text-anchor="middle" fill="#a8b8d0" font-size="11" font-weight="700">ToolNode（medical_rag_search）</text>
+  <rect x="70" y="638" width="330" height="24" rx="6" fill="#2a3a5a" stroke="#5a8ad0" stroke-width="1"/>
+    <text x="235" y="655" text-anchor="middle" fill="#c8e0f8" font-size="10">Chroma dense（BGE-M3）</text>
+  <rect x="70" y="666" width="330" height="24" rx="6" fill="#2a3a5a" stroke="#5a8ad0" stroke-width="1"/>
+  <text x="235" y="683" text-anchor="middle" fill="#c8e0f8" font-size="10">BM25 sparse（jieba + IDF）</text>
+  <rect x="70" y="694" width="330" height="24" rx="6" fill="#2a3a5a" stroke="#5a8ad0" stroke-width="1"/>
+  <text x="235" y="711" text-anchor="middle" fill="#c8e0f8" font-size="10">RRF 融合（k=60）</text>
+  <rect x="70" y="722" width="330" height="24" rx="6" fill="#2a3a5a" stroke="#5a8ad0" stroke-width="1"/>
+  <text x="235" y="739" text-anchor="middle" fill="#c8e0f8" font-size="10">BGE reranker（失败→降级 RRF）</text>
+  <text x="235" y="770" text-anchor="middle" fill="#7a8ba8" font-size="10">返回 Top-N 文档 + 来源 metadata</text>
+
+  <line x1="235" y1="788" x2="235" y2="812" stroke="#556677" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <rect x="50" y="812" width="370" height="42" rx="10" fill="#2a3a5a" stroke="#7aa6d0" stroke-width="1.5"/>
+  <text x="235" y="830" text-anchor="middle" fill="#c8e0f8" font-size="12" font-weight="700">Agent：组织科普回答</text>
+    <text x="235" y="846" text-anchor="middle" fill="#8aa8c8" font-size="10">按检索/重排结果组织，引用真实来源</text>
+
+  <line x1="235" y1="854" x2="235" y2="878" stroke="#556677" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <rect x="50" y="878" width="370" height="42" rx="10" fill="#1f2a3a" stroke="#7a8ba8" stroke-width="1"/>
+  <text x="235" y="896" text-anchor="middle" fill="#a8b8d0" font-size="11">record_tool_round：rounds += 1</text>
+  <text x="235" y="911" text-anchor="middle" fill="#7a8ba8" font-size="10">收集本轮真实引用（限定 medical_rag_search）</text>
+
+  <line x1="235" y1="920" x2="235" y2="944" stroke="#556677" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <rect x="50" y="944" width="370" height="42" rx="10" fill="#2a3a5a" stroke="#7aa6d0" stroke-width="1.5"/>
+  <text x="235" y="962" text-anchor="middle" fill="#c8e0f8" font-size="12" font-weight="700">Agent：组织最终回答</text>
+  <text x="235" y="978" text-anchor="middle" fill="#8aa8c8" font-size="10">直接回答，或按需调用科室工具</text>
+
+  <line x1="235" y1="986" x2="235" y2="1010" stroke="#556677" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <rect x="50" y="1010" width="370" height="34" rx="8" fill="#1f2a3a" stroke="#7a8ba8" stroke-width="1"/>
+  <text x="235" y="1031" text-anchor="middle" fill="#a8b8d0" font-size="11">→ 进入输出审核（共享节点）</text>
+
+  <line x1="235" y1="1044" x2="235" y2="1110" stroke="#5a8ad0" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- ============ Right: agentic ============ -->
+  <rect x="470" y="490" width="430" height="600" rx="14" fill="url(#agBg)" stroke="#c47ad0" stroke-width="1.5"/>
+  <text x="490" y="514" fill="#e0a8f0" font-size="13" font-weight="900">agentic 路径</text>
+  <text x="490" y="530" fill="#985a98" font-size="10">首轮 tool_choice=assess_information_gaps · 按需自由编排</text>
+
+  <rect x="500" y="544" width="370" height="42" rx="10" fill="#3a2a5a" stroke="#c47ad0" stroke-width="1.5"/>
+  <text x="685" y="562" text-anchor="middle" fill="#f0d8f8" font-size="12" font-weight="700">Agent：tool_choice=assess_information_gaps</text>
+  <text x="685" y="578" text-anchor="middle" fill="#a888c0" font-size="10">必须先评估缺口，不得直接开答</text>
+
+  <line x1="685" y1="586" x2="685" y2="608" stroke="#985a98" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <rect x="500" y="608" width="370" height="220" rx="10" fill="#2a1f3a" stroke="#a87aa8" stroke-width="1"/>
+  <text x="685" y="628" text-anchor="middle" fill="#d8b8e0" font-size="11" font-weight="700">ToolNode（按 Agent 决策动态调用）</text>
+  <rect x="520" y="638" width="160" height="24" rx="6" fill="#3a2a5a" stroke="#c47ad0" stroke-width="1"/>
+  <text x="600" y="655" text-anchor="middle" fill="#f0d8f8" font-size="10">assess_information_gaps</text>
+  <rect x="690" y="638" width="160" height="24" rx="6" fill="#3a2a5a" stroke="#c47ad0" stroke-width="1"/>
+  <text x="770" y="655" text-anchor="middle" fill="#f0d8f8" font-size="10">read_medical_doc</text>
+  <rect x="520" y="666" width="160" height="24" rx="6" fill="#3a2a5a" stroke="#c47ad0" stroke-width="1"/>
+  <text x="600" y="683" text-anchor="middle" fill="#f0d8f8" font-size="10">medical_rag_search</text>
+  <rect x="690" y="666" width="160" height="24" rx="6" fill="#3a2a5a" stroke="#c47ad0" stroke-width="1"/>
+  <text x="770" y="683" text-anchor="middle" fill="#f0d8f8" font-size="10">create_task_plan</text>
+  <rect x="520" y="694" width="160" height="24" rx="6" fill="#3a2a5a" stroke="#c47ad0" stroke-width="1"/>
+  <text x="600" y="711" text-anchor="middle" fill="#f0d8f8" font-size="10">update_task_progress</text>
+  <rect x="690" y="694" width="160" height="24" rx="6" fill="#3a2a5a" stroke="#c47ad0" stroke-width="1"/>
+  <text x="770" y="711" text-anchor="middle" fill="#f0d8f8" font-size="10">get_department_recommend</text>
+  <rect x="520" y="722" width="160" height="24" rx="6" fill="#3a2a5a" stroke="#c47ad0" stroke-width="1"/>
+  <text x="600" y="739" text-anchor="middle" fill="#f0d8f8" font-size="9">build_visit_preparation</text>
+  <rect x="690" y="722" width="160" height="24" rx="6" fill="#3a2a5a" stroke="#c47ad0" stroke-width="1"/>
+  <text x="770" y="739" text-anchor="middle" fill="#f0d8f8" font-size="8.7">check_evidence_sufficiency</text>
+  <text x="685" y="770" text-anchor="middle" fill="#a888c0" font-size="10">缺口未补 → 一次只追问一个最关键问题</text>
+  <text x="685" y="788" text-anchor="middle" fill="#a888c0" font-size="10">信息充分 → 拆检索 / 改查询 / 真实证据自检 / 收束</text>
+
+  <line x1="685" y1="828" x2="685" y2="852" stroke="#985a98" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <rect x="500" y="852" width="370" height="42" rx="10" fill="#2a1f3a" stroke="#a87aa8" stroke-width="1"/>
+  <text x="685" y="870" text-anchor="middle" fill="#d8b8e0" font-size="11">record_tool_round：rounds += 1，记录本轮工具轨迹</text>
+  <text x="685" y="885" text-anchor="middle" fill="#a888c0" font-size="10">并行调多个工具仍记 1 轮</text>
+
+  <line x1="685" y1="894" x2="685" y2="912" stroke="#985a98" stroke-width="1.5"/>
+  <line x1="685" y1="912" x2="600" y2="912" stroke="#985a98" stroke-width="1.5"/>
+  <line x1="600" y1="912" x2="600" y2="934" stroke="#81c784" stroke-width="1.5" marker-end="url(#arrG)"/>
+  <line x1="685" y1="912" x2="685" y2="934" stroke="#985a98" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <text x="615" y="928" fill="#81c784" font-size="10">rounds &lt; 6</text>
+  <text x="695" y="928" fill="#e57373" font-size="10">rounds ≥ 6</text>
+
+  <!-- loop back -->
+  <path d="M 600 934 Q 540 980 530 980" stroke="#81c784" stroke-width="1.2" fill="none"/>
+  <path d="M 530 980 Q 510 980 510 578" stroke="#81c784" stroke-width="1" fill="none" stroke-dasharray="4,3"/>
+  <text x="458" y="900" fill="#81c784" font-size="9" transform="rotate(-90 458 900)">回到 Agent 继续编排</text>
+
+  <!-- agent_limit -->
+  <rect x="620" y="934" width="220" height="42" rx="10" fill="#3a1a1a" stroke="#e57373" stroke-width="1.5"/>
+  <text x="730" y="952" text-anchor="middle" fill="#ffaaaa" font-size="11" font-weight="700">agent_limit</text>
+  <text x="730" y="968" text-anchor="middle" fill="#ffaaaa" font-size="10">如实告知并请用户缩小目标</text>
+
+  <line x1="730" y1="976" x2="730" y2="1010" stroke="#e57373" stroke-width="1.5" marker-end="url(#arrR)"/>
+
+  <rect x="500" y="1010" width="370" height="34" rx="8" fill="#2a1f3a" stroke="#a87aa8" stroke-width="1"/>
+  <text x="685" y="1031" text-anchor="middle" fill="#d8b8e0" font-size="11">→ 进入输出审核（共享节点）</text>
+
+  <line x1="685" y1="1044" x2="685" y2="1110" stroke="#c47ad0" stroke-width="1.5" marker-end="url(#arrP)"/>
+
+  <!-- ============ Output Audit ============ -->
+  <rect x="20" y="1110" width="880" height="180" rx="14" fill="url(#outBg)" stroke="#5acf8a" stroke-width="1.5" stroke-dasharray="6,3"/>
+  <text x="36" y="1132" fill="#a8e6b8" font-size="13" font-weight="900">输出审核 output_check（两模式共享）</text>
+
+  <rect x="40" y="1148" width="270" height="58" rx="10" fill="#1a2a22" stroke="#5acf8a" stroke-width="1"/>
+  <text x="175" y="1168" text-anchor="middle" fill="#c8e8d0" font-size="11" font-weight="700">① 引用隔离</text>
+  <text x="175" y="1184" text-anchor="middle" fill="#c8e8d0" font-size="10">仅保留本轮工具真实来源</text>
+  <text x="175" y="1198" text-anchor="middle" fill="#88a890" font-size="9">限定 ToolMessage.name == medical_rag_search</text>
+
+  <rect x="325" y="1148" width="270" height="58" rx="10" fill="#1a2a22" stroke="#5acf8a" stroke-width="1"/>
+  <text x="460" y="1168" text-anchor="middle" fill="#c8e8d0" font-size="11" font-weight="700">② 无引用降级</text>
+  <text x="460" y="1184" text-anchor="middle" fill="#c8e8d0" font-size="10">fast_rag 检索为空 → 整条替换；partial JSON → 解包引用</text>
+  <text x="460" y="1198" text-anchor="middle" fill="#88a890" font-size="9">agentic 收束 → 保留清单 + 提示</text>
+
+  <rect x="610" y="1148" width="270" height="58" rx="10" fill="#1a2a22" stroke="#5acf8a" stroke-width="1"/>
+  <text x="745" y="1168" text-anchor="middle" fill="#c8e8d0" font-size="11" font-weight="700">③ 违禁表达审核</text>
+  <text x="745" y="1184" text-anchor="middle" fill="#c8e8d0" font-size="10">诊断式 / 剂量式 → 整句剔除</text>
+  <text x="745" y="1198" text-anchor="middle" fill="#88a890" font-size="9">compliance.py：按句切分 + 正则审核</text>
+
+    <text x="460" y="1232" text-anchor="middle" fill="#7aa888" font-size="10">refuse / emergency 直接附加；正常两模式由 output_check 附加</text>
+
+  <line x1="460" y1="1240" x2="460" y2="1268" stroke="#5acf8a" stroke-width="1.5" marker-end="url(#arrG)"/>
+
+  <!-- Final Output -->
+  <rect x="280" y="1268" width="360" height="56" rx="12" fill="#1a3a2a" stroke="#81c784" stroke-width="2"/>
+  <text x="460" y="1290" text-anchor="middle" fill="#a8e6b8" font-size="14" font-weight="900">安全回答 + 真实引用 + 免责声明</text>
+  <text x="460" y="1308" text-anchor="middle" fill="#88c8a0" font-size="10">本轮工具来源为准 · 模型伪来源清除 · 安全条款末尾兜底</text>
+
+  <!-- Legend -->
+  <rect x="20" y="1356" width="880" height="100" rx="10" fill="#1a1a2e" stroke="#334466" stroke-width="1"/>
+  <text x="40" y="1378" fill="#a8b8d0" font-size="12" font-weight="700">图例 / 颜色说明</text>
+
+  <rect x="40" y="1390" width="14" height="14" rx="3" fill="#2d3561" stroke="#5b6bb7"/>
+  <text x="60" y="1401" fill="#c8d4ef" font-size="10">用户层</text>
+
+  <rect x="160" y="1390" width="14" height="14" rx="3" fill="#3a1a1a" stroke="#e57373"/>
+  <text x="180" y="1401" fill="#ffaaaa" font-size="10">安全规则（高危/危急）</text>
+
+  <rect x="320" y="1390" width="14" height="14" rx="3" fill="#2a3a5a" stroke="#7aa6d0"/>
+  <text x="340" y="1401" fill="#9ac4f0" font-size="10">fast_rag（左·蓝）</text>
+
+  <rect x="480" y="1390" width="14" height="14" rx="3" fill="#3a2a5a" stroke="#c47ad0"/>
+  <text x="500" y="1401" fill="#e0a8f0" font-size="10">agentic（右·紫）</text>
+
+  <rect x="640" y="1390" width="14" height="14" rx="3" fill="#1a3a2a" stroke="#81c784"/>
+  <text x="660" y="1401" fill="#a8e6b8" font-size="10">输出审核（共享·绿）</text>
+
+  <text x="40" y="1430" fill="#7a8ba8" font-size="10">关键点：规则先于模型 · 双模式分级放权 · 首步工具锁定 · 6 轮上限 · RAG 真实引用 · 75 项自动化测试通过</text>
+
+</svg>

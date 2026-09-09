@@ -371,13 +371,25 @@ def main(full: bool | None = None):
     if full is None:
         ap = argparse.ArgumentParser()
         ap.add_argument(
-            "--full", action="store_true", help="追加全流程评估（高危图拦截 + 知识覆盖）"
+            "--full",
+            action="store_true",
+            help="追加全流程评估（高危图拦截 + 知识覆盖 + Agentic 轨迹）",
         )
         args = ap.parse_args()
         full = args.full
 
     dataset = load_dataset()
-    report = ["# 医疗 Agent 评估报告\n"]
+    mode_note = (
+        "完整模式：调用真实模型与本地知识库，并追加知识覆盖和 Agentic 轨迹评估。"
+        if full
+        else "快速模式：仅执行高危规则、症状抽取和科室路由，不包含知识覆盖或 Agentic 全流程结果。"
+    )
+    report = [
+        "# 医疗 Agent 评估报告\n",
+        "> 评估数据来自 `data/eval_dataset.json` 的合成开发用例，仅用于工程回归，"
+        "不能解释为临床准确率或线上生产效果。\n",
+        f"> {mode_note}\n",
+    ]
 
     # 1. 高危拦截
     r1 = eval_high_risk(dataset, full)

@@ -1,0 +1,127 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 1180" font-family="'Microsoft YaHei','PingFang SC',sans-serif">
+  <defs>
+    <marker id="arr" markerWidth="10" markerHeight="10" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#8899aa"/></marker>
+    <marker id="arrP" markerWidth="10" markerHeight="10" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#c47ad0"/></marker>
+    <marker id="arrG" markerWidth="10" markerHeight="10" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#81c784"/></marker>
+    <marker id="arrR" markerWidth="10" markerHeight="10" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#e57373"/></marker>
+    <linearGradient id="titleBg" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#16213e"/><stop offset="1" stop-color="#3a1a4a"/></linearGradient>
+    <linearGradient id="agBg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2a1a4a"/><stop offset="1" stop-color="#221536"/></linearGradient>
+    <linearGradient id="loopBg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1a2a3a"/><stop offset="1" stop-color="#16203a"/></linearGradient>
+  </defs>
+
+  <rect x="0" y="0" width="960" height="1180" fill="#12121f"/>
+
+  <!-- Title -->
+  <rect x="20" y="16" width="920" height="54" rx="12" fill="url(#titleBg)" stroke="#334466" stroke-width="1"/>
+  <text x="480" y="46" text-anchor="middle" fill="#e0e8f0" font-size="20" font-weight="900">agentic 循环：什么必须靠 Agent（而非更强 LLM）</text>
+  <text x="480" y="64" text-anchor="middle" fill="#9ab0d0" font-size="11">判定标准：是否必须依据上一轮工具/环境结果，决定下一步做什么、调哪个工具、调几次、何时停</text>
+
+  <!-- classify_task entry -->
+  <rect x="330" y="92" width="300" height="40" rx="10" fill="#1f2a3a" stroke="#7a8ba8" stroke-width="1"/>
+  <text x="480" y="117" text-anchor="middle" fill="#a8b8d0" font-size="13" font-weight="700">classify_task：复杂任务？（报告/对比/就医准备/多症状）</text>
+  <line x1="480" y1="132" x2="480" y2="158" stroke="#c47ad0" stroke-width="2" marker-end="url(#arrP)"/>
+
+  <!-- Agent node -->
+  <rect x="300" y="158" width="360" height="46" rx="10" fill="url(#agBg)" stroke="#c47ad0" stroke-width="1.5"/>
+  <text x="480" y="180" text-anchor="middle" fill="#e8c8ef" font-size="13" font-weight="800">Agent 节点（LLM + bind_tools）</text>
+  <text x="480" y="197" text-anchor="middle" fill="#c9a8d8" font-size="10.5">首步 tool_choice = assess_information_gaps（代码锁定）</text>
+
+  <!-- Tools panel -->
+  <rect x="300" y="218" width="360" height="250" rx="12" fill="url(#loopBg)" stroke="#7aa8c8" stroke-width="1.2"/>
+  <text x="480" y="238" text-anchor="middle" fill="#a8d8e8" font-size="12.5" font-weight="800">白名单工具（Agent 在循环中选择）</text>
+
+  <!-- tool rows -->
+  <rect x="316" y="246" width="328" height="26" rx="6" fill="#162033" stroke="#c47ad0" stroke-width="1.6"/>
+  <text x="328" y="263" fill="#e8c8ef" font-size="11">① medical_rag_search</text>
+  <text x="636" y="263" text-anchor="end" fill="#c47ad0" font-size="10">反馈信号 + 重复拦截</text>
+
+  <rect x="316" y="278" width="328" height="22" rx="6" fill="#162033" stroke="#5b7ba8" stroke-width="1"/>
+  <text x="328" y="293" fill="#b8c8e0" font-size="11">② get_department_recommend（确定性映射）</text>
+
+  <rect x="316" y="304" width="328" height="22" rx="6" fill="#162033" stroke="#5b7ba8" stroke-width="1"/>
+  <text x="328" y="319" fill="#b8c8e0" font-size="11">③ read_medical_doc（不可信文档）</text>
+
+  <rect x="316" y="330" width="328" height="22" rx="6" fill="#162033" stroke="#c47ad0" stroke-width="1.6"/>
+  <text x="328" y="345" fill="#e8c8ef" font-size="11">④ assess_information_gaps</text>
+  <text x="636" y="345" text-anchor="end" fill="#c47ad0" font-size="10">跨轮追问状态</text>
+
+  <rect x="316" y="356" width="328" height="22" rx="6" fill="#162033" stroke="#5b7ba8" stroke-width="1"/>
+  <text x="328" y="371" fill="#b8c8e0" font-size="11">⑤ build_visit_preparation（确定性模板）</text>
+
+  <rect x="316" y="382" width="328" height="22" rx="6" fill="#162033" stroke="#c47ad0" stroke-width="1.6"/>
+  <text x="328" y="397" fill="#e8c8ef" font-size="10">⑥ create_task_plan · ⑦ update_task_progress</text>
+  <text x="636" y="397" text-anchor="end" fill="#c47ad0" font-size="10">成功结果才写 State</text>
+
+  <rect x="316" y="408" width="328" height="22" rx="6" fill="#162033" stroke="#c47ad0" stroke-width="1.6"/>
+  <text x="328" y="423" fill="#e8c8ef" font-size="11">⑧ check_evidence_sufficiency</text>
+  <text x="636" y="423" text-anchor="end" fill="#c47ad0" font-size="10">真实 RAG 证据注入</text>
+
+  <text x="480" y="456" text-anchor="middle" fill="#7a8ba8" font-size="10">紫色边框 = 支撑“观察 → 改变策略”的闭环能力</text>
+
+  <!-- State fields chips -->
+  <text x="700" y="240" fill="#9ab0d0" font-size="12" font-weight="800">驱动闭环的 State 字段</text>
+  <rect x="690" y="250" width="240" height="30" rx="8" fill="#2a1a3a" stroke="#c47ad0" stroke-width="1.2"/>
+  <text x="810" y="270" text-anchor="middle" fill="#e8c8ef" font-size="11">attempted_queries</text>
+  <rect x="690" y="286" width="240" height="30" rx="8" fill="#2a1a3a" stroke="#c47ad0" stroke-width="1.2"/>
+  <text x="810" y="306" text-anchor="middle" fill="#e8c8ef" font-size="11">agent_plan（list[dict]）</text>
+  <rect x="690" y="322" width="240" height="30" rx="8" fill="#2a1a3a" stroke="#c47ad0" stroke-width="1.2"/>
+  <text x="810" y="342" text-anchor="middle" fill="#e8c8ef" font-size="11">asked_questions</text>
+  <text x="810" y="372" text-anchor="middle" fill="#9ab0d0" font-size="10">由 record_tool_round 节点统一写入</text>
+
+  <!-- loop back -->
+  <path d="M300,281 C150,281 150,440 300,440" fill="none" stroke="#c47ad0" stroke-width="2" marker-end="url(#arrP)"/>
+  <text x="120" y="360" fill="#c47ad0" font-size="11" font-weight="700" transform="rotate(-90 120 360)">持续循环</text>
+
+  <!-- record_tool_round + route -->
+  <rect x="300" y="440" width="360" height="40" rx="10" fill="#1f2a3a" stroke="#7a8ba8" stroke-width="1"/>
+  <text x="480" y="465" text-anchor="middle" fill="#a8b8d0" font-size="12" font-weight="700">record_tool_round_node：写入 State + 累计轮数</text>
+
+  <!-- route_after_tools branch -->
+  <rect x="300" y="496" width="360" height="46" rx="10" fill="#2a1a3a" stroke="#c47ad0" stroke-width="1.3"/>
+  <text x="480" y="518" text-anchor="middle" fill="#e8c8ef" font-size="12" font-weight="800">route_after_tools</text>
+  <text x="480" y="535" text-anchor="middle" fill="#c9a8d8" font-size="10.5">agent_tool_rounds ≥ 6 ?</text>
+
+  <line x1="660" y1="519" x2="760" y2="519" stroke="#e57373" stroke-width="1.8" marker-end="url(#arrR)"/>
+  <text x="700" y="510" fill="#ffaaaa" font-size="10">是</text>
+  <rect x="760" y="498" width="170" height="42" rx="9" fill="#3a1a1a" stroke="#e57373" stroke-width="1.3"/>
+  <text x="845" y="516" text-anchor="middle" fill="#ffaaaa" font-size="11" font-weight="700">agent_limit</text>
+  <text x="845" y="532" text-anchor="middle" fill="#ffaaaa" font-size="10">安全收束（防死循环）</text>
+
+  <line x1="480" y1="542" x2="480" y2="572" stroke="#c47ad0" stroke-width="2" marker-end="url(#arrP)"/>
+  <text x="490" y="560" fill="#c47ad0" font-size="10">否 → 回到 Agent 节点继续</text>
+
+  <!-- output_check -->
+  <rect x="300" y="572" width="360" height="44" rx="10" fill="#1a3a2a" stroke="#81c784" stroke-width="1.3"/>
+  <text x="480" y="594" text-anchor="middle" fill="#a8e6b8" font-size="12" font-weight="700">output_check（共享收敛出口）</text>
+  <text x="480" y="610" text-anchor="middle" fill="#88c898" font-size="10">引用只来自 RAG · agentic 保留主体 · 违禁审核 · 免责声明</text>
+
+  <!-- Legend panel -->
+  <rect x="20" y="660" width="920" height="490" rx="14" fill="#16162a" stroke="#334466" stroke-width="1"/>
+  <text x="40" y="688" fill="#e0e8f0" font-size="15" font-weight="900">判定矩阵：本项目各项能力该归哪一层？</text>
+
+  <text x="40" y="722" fill="#c47ad0" font-size="13" font-weight="800">■ 真 Agent（观察依赖闭环，换更强 LLM 也做不到）</text>
+  <text x="40" y="746" fill="#c9b0d8" font-size="11.5">• 重复查询拦截：收到 insufficient 后换表述；attempted_queries 仅在当前请求循环内累积</text>
+  <text x="40" y="768" fill="#c9b0d8" font-size="11.5">• 显式计划与进度跟踪（P&amp;E 思路）：成功工具结果更新计划，Agent 据此调整后续动作</text>
+  <text x="40" y="790" fill="#c9b0d8" font-size="11.5">• 证据充分性自检：系统注入本轮真实 RAG 结果；agentic 至少强制检查一次，未覆盖则要求补检索</text>
+  <text x="40" y="812" fill="#c9b0d8" font-size="11.5">• 追问去重：跨轮记住"已问过什么"，否则每轮重复问同一件事</text>
+
+  <line x1="40" y1="830" x2="920" y2="830" stroke="#334466" stroke-width="1" stroke-dasharray="4,3"/>
+
+  <text x="40" y="858" fill="#7aa8c8" font-size="13" font-weight="800">■ 不是 Agent（LLM / RAG / Workflow 即可，不要当成 Agent 吹）</text>
+  <text x="40" y="882" fill="#a8c8d8" font-size="11.5">• 高危/危急分流、输出审核、上传脱敏与 thread 授权 → Workflow / 规则</text>
+  <text x="40" y="904" fill="#a8c8d8" font-size="11.5">• 普通科普（fast_rag）→ 最小权限 RAG：首步检索，后续仅可补检索、问科室或回答</text>
+  <text x="40" y="926" fill="#a8c8d8" font-size="11.5">• 症状结构化抽取 → 图节点 + 小模型（一次结构化输出，不依赖后续反馈）</text>
+
+  <line x1="40" y1="944" x2="920" y2="944" stroke="#334466" stroke-width="1" stroke-dasharray="4,3"/>
+
+  <text x="40" y="972" fill="#e0c890" font-size="13" font-weight="800">面试一句话收口</text>
+  <text x="40" y="998" fill="#d8c8a8" font-size="11.5">“强 LLM 能帮你把单次工具调用写得更准，但'看到工具结果后改变主意、跨轮记住自己做过什么、</text>
+  <text x="40" y="1018" fill="#d8c8a8" font-size="11.5">用真实工具结果校验证据'这三件事，是 Agent 闭环的本职，不是模型智商问题。本项目真正依赖 Agent 的，</text>
+  <text x="40" y="1038" fill="#d8c8a8" font-size="11.5">就是检索失败重试、计划执行与回改、证据自检和追问去重这四块。”</text>
+
+  <rect x="40" y="1062" width="880" height="64" rx="10" fill="#1a2438" stroke="#5b7ba8" stroke-width="1"/>
+  <text x="56" y="1084" fill="#9ab0d0" font-size="11" font-weight="700">关键代码锚点</text>
+  <text x="56" y="1104" fill="#a8b8d0" font-size="10.5">medical_rag_search + State.attempted_queries：失败反馈与重复查询拦截</text>
+  <text x="56" y="1120" fill="#a8b8d0" font-size="10.5">create_task_plan / update_task_progress + record_tool_round_node：成功结果写入计划状态</text>
+  <text x="56" y="1136" fill="#a8b8d0" font-size="10.5">check_evidence_sufficiency：真实 RAG 注入 · assess_information_gaps：追问去重</text>
+</svg>

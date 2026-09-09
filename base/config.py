@@ -60,7 +60,7 @@ MODEL_API_BASE_URL = os.getenv("MODEL_API_BASE_URL")  # OpenAI 兼容接口地�
 BASE_LLM = os.getenv("BASE_LLM")  # 主模型
 SMALL_LLM = os.getenv("SMALL_LLM", os.getenv("BASE_LLM"))  # 轻量模型（症状抽取等）
 
-# 嵌入模型：BGE-M3（医学语料召回显著优于通用 embedding）
+# 嵌入模型：BGE-M3；当前项目使用其稠密向量能力，尚未做通用 embedding 对照实验
 EMBEDDING_MODEL = os.getenv("EMBEDDING_MODEL", "BAAI/bge-m3")
 EMBEDDING_BATCH_SIZE = int(os.getenv("EMBEDDING_BATCH_SIZE", "32"))
 
@@ -70,7 +70,7 @@ RERANK_MODEL = os.getenv("RERANK_MODEL", "BAAI/bge-reranker-v2-m3")
 RERANK_TOP_K = int(os.getenv("RERANK_TOP_K", os.getenv("ENABLE_RERANK_TOP_K", "5")))
 
 # ==================== RAG 配置 ====================
-# 医学文档切片：按章节切分，块大小控制在 512-1024 字符
+# 医学文档切片：按章节切分，目标块大小 400-1024 字符
 CHUNK_MIN_SIZE = 400
 CHUNK_MAX_SIZE = 1024
 CHUNK_OVERLAP = 80
