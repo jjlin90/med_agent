@@ -183,9 +183,11 @@ class MedicalWorkflowMiddleware(AgentMiddleware):
     def after_agent(self, state, runtime):
         from medical.graph import output_check_node
 
-        if state.get("is_emergency") or state.get("is_high_risk") or state.get(
-            "domain_scope"
-        ) in {"smalltalk", "off_topic", "uncertain"}:
+        if (
+            state.get("is_emergency")
+            or state.get("is_high_risk")
+            or state.get("domain_scope") in {"smalltalk", "off_topic", "uncertain"}
+        ):
             return None
         return output_check_node(state)
 

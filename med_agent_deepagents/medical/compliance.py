@@ -104,7 +104,10 @@ _MEDICAL_DOMAIN_PATTERNS = [
     re.compile(r"[\u4e00-\u9fff]{1,12}(病|炎|癌|瘤|症|综合征)"),
 ]
 _OFF_TOPIC_PATTERNS = [
-    re.compile(r"(编程|写代码|代码报错|程序报错|Python|Java|JavaScript|C\+\+|SQL|数据库|算法题|前端|后端)", re.I),
+    re.compile(
+        r"(编程|写代码|代码报错|程序报错|Python|Java|JavaScript|C\+\+|SQL|数据库|算法题|前端|后端)",
+        re.I,
+    ),
     re.compile(r"(股票|基金|期货|比特币|虚拟币|投资|理财|汇率|贷款|房价)"),
     re.compile(r"(天气|气温|下雨|台风|旅游|酒店|机票|景点|路线规划)"),
     re.compile(r"(足球|篮球|比赛比分|世界杯|奥运会|游戏攻略|电子竞技)"),
@@ -115,6 +118,8 @@ _MEDICAL_FOLLOWUP_PATTERN = re.compile(
     r"要注意什么|有什么区别|需要检查吗|该挂什么科|帮我总结一下|总结一下|"
     r"整理一下|分析一下|看看这个文件|这份文件|这份资料)[?？!！。\s]*$"
 )
+
+
 def classify_domain_scope(text: str, has_medical_context: bool = False) -> str:
     """以高置信规则返回 medical / smalltalk / off_topic；模糊输入返回 uncertain。"""
     normalized = str(text or "").strip()

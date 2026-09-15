@@ -497,6 +497,7 @@ class ProductionInjectionTests(unittest.TestCase):
             patch("medical.graph.get_llm", return_value=llm),
             patch("medical.graph.get_small_llm") as small_llm,
         ):
+
             def structured_output(schema):
                 structured = MagicMock()
                 if schema is G.SafetyIntent:

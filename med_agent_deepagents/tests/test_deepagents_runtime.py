@@ -236,9 +236,7 @@ class RuntimeTests(unittest.TestCase):
     def test_sync_sqlite_restore_and_new_turn_reset(self):
         model = ScriptedLLM([AIMessage(content="请补充资料。"), AIMessage(content="请补充资料。")])
         small = Mock()
-        symptom_results = iter(
-            [G.SymptomInfo(symptoms=["咳嗽"], age=30), G.SymptomInfo()]
-        )
+        symptom_results = iter([G.SymptomInfo(symptoms=["咳嗽"], age=30), G.SymptomInfo()])
 
         def structured_output(schema):
             structured = Mock()

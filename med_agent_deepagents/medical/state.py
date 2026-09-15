@@ -27,7 +27,9 @@ class MedicalAgentState(TypedDict):
     domain_scope_source: NotRequired[str]  # rule / semantic / fallback
     domain_scope_confidence: NotRequired[float | None]  # 语义分类置信度；规则命中为 1.0
     domain_scope_reason: NotRequired[str]  # 限长分类依据或固定失败标记
-    safety_intent: NotRequired[str]  # emergency / diagnosis_request / medication_request / normal / uncertain
+    safety_intent: NotRequired[
+        str
+    ]  # emergency / diagnosis_request / medication_request / normal / uncertain
     safety_intent_source: NotRequired[str]  # rule / semantic / pending / fallback
     safety_intent_confidence: NotRequired[float | None]
     safety_intent_reason: NotRequired[str]  # 限长语义安全分类依据或固定失败标记

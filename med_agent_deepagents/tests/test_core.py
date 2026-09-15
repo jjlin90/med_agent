@@ -16,6 +16,7 @@ from medical.compliance import (
     detect_emergency,
     detect_high_risk,
 )
+from medical.deep_agent import MedicalWorkflowMiddleware
 from medical.department import recommend_departments
 from medical.graph import (
     SafetyIntent,
@@ -29,7 +30,6 @@ from medical.graph import (
     route_after_tools,
     semantic_safety_node,
 )
-from medical.deep_agent import MedicalWorkflowMiddleware
 from medical.privacy import redact_sensitive_text
 from medical.tools import (
     AGENT_TOOLS,
@@ -68,7 +68,12 @@ class ComplianceTests(unittest.TestCase):
                 self.assertTrue(detect_high_risk(text)[0])
 
     def test_normal_education_is_not_blocked(self):
-        for text in ("2型糖尿病有哪些症状", "什么是血常规检查", "咳嗽挂什么科", "药物剂量是什么意思"):
+        for text in (
+            "2型糖尿病有哪些症状",
+            "什么是血常规检查",
+            "咳嗽挂什么科",
+            "药物剂量是什么意思",
+        ):
             with self.subTest(text=text):
                 self.assertFalse(detect_high_risk(text)[0])
 
@@ -92,7 +97,13 @@ class ComplianceTests(unittest.TestCase):
                 self.assertFalse(detect_emergency(text))
 
     def test_domain_scope_distinguishes_medical_smalltalk_and_off_topic(self):
-        medical = ("什么是血常规检查", "比较胃镜和呼气试验", "最近总是头痛", "最近总是睡不好怎么办", "用 Python 写一个医疗问答程序")
+        medical = (
+            "什么是血常规检查",
+            "比较胃镜和呼气试验",
+            "最近总是头痛",
+            "最近总是睡不好怎么办",
+            "用 Python 写一个医疗问答程序",
+        )
         smalltalk = ("你好", "你能做什么？", "谢谢你")
         off_topic = ("帮我写一个 Python 排序算法", "今天北京天气怎么样", "分析一下这只股票")
         for text in medical:
@@ -254,7 +265,9 @@ class RoutingTests(unittest.TestCase):
             patch("medical.graph.get_llm", side_effect=AssertionError("不应调用主模型")),
             patch("medical.graph.get_small_llm", return_value=model),
         ):
-            result = graph.invoke({"messages": [HumanMessage(content="帮我写一个 Python 排序算法")]})
+            result = graph.invoke(
+                {"messages": [HumanMessage(content="帮我写一个 Python 排序算法")]}
+            )
         self.assertEqual(result["domain_scope"], "off_topic")
         self.assertEqual(result["safety_intent_source"], "semantic")
         self.assertIn("非医疗任务", result["messages"][-1].content)
@@ -339,7 +352,9 @@ class RoutingTests(unittest.TestCase):
             }
         )
         self.assertEqual(prepared["tool_choice"], "assess_information_gaps")
-        self.assertEqual([tool.name for tool in prepared["tools"]], [tool.name for tool in AGENT_TOOLS])
+        self.assertEqual(
+            [tool.name for tool in prepared["tools"]], [tool.name for tool in AGENT_TOOLS]
+        )
 
     def test_agentic_mode_forces_evidence_check_after_latest_rag(self):
         prepared = self._prepared_request(
@@ -352,7 +367,9 @@ class RoutingTests(unittest.TestCase):
             }
         )
         self.assertEqual(prepared["tool_choice"], "check_evidence_sufficiency")
-        self.assertEqual([tool.name for tool in prepared["tools"]], [tool.name for tool in AGENT_TOOLS])
+        self.assertEqual(
+            [tool.name for tool in prepared["tools"]], [tool.name for tool in AGENT_TOOLS]
+        )
 
     def test_fast_rag_exposes_only_small_toolset(self):
         prepared = self._prepared_request(
