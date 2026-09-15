@@ -1,0 +1,17 @@
+# Security and privacy
+
+This project handles potentially sensitive health information. It is an educational demo, not a medical device.
+
+## Reporting a vulnerability
+
+Open a private security advisory in the GitHub repository. Do not include real patient information, API keys, logs, or exploit data in a public issue.
+
+## Data handling
+
+- Operational logs are enabled by default, redact common direct identifiers, rotate by size, and must not intentionally record raw user input.
+- Encrypted session audit logging is disabled by default and must be enabled explicitly.
+- Uploaded text is stored under a thread-scoped directory with a generic filename and common direct identifiers redacted. This path boundary is not user authentication or a tenant ACL; production use needs server-side ownership checks.
+- Runtime uploads, indexes, checkpoints, encryption keys, operational logs, and encrypted audit logs are excluded from version control.
+- Redaction is a safety layer, not a guarantee of full anonymization. Review every file before publication.
+
+Rotate any credential immediately if it has ever been committed or shared.

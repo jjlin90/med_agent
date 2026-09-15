@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1500" height="1349" viewBox="0 0 1500 1349" role="img" aria-label="med_agent · Deep Agents 双模式完整流程">
+<defs><marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#4277b2"/></marker></defs>
+<rect width="100%" height="100%" fill="#f0f5fb"/>
+<g font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif">
+<text x="90" y="60" font-size="34" font-weight="700" fill="#16375a">med_agent · Deep Agents 双模式完整流程</text>
+<text x="90" y="103" font-size="20" fill="#475569">create_deep_agent + MedicalWorkflowMiddleware｜源码核对：2026-09-15</text><rect x="90" y="145" width="1320" height="130" rx="14" fill="#ffffff" stroke="#b7c9df"/>
+<text x="120" y="180" font-size="24" font-weight="700" fill="#16375a">1  输入与 before_agent</text>
+<text x="120" y="215" font-size="20" fill="#334155">CLI / Streamlit / Agent Server 提交 messages；Agent Chat UI 可另传 upload_files。</text>
+<text x="120" y="245" font-size="20" fill="#334155">初始化本用户轮状态 → 上传校验、脱敏和目录保存 → 输入规则检测。</text>
+<path d="M750 279 v28" stroke="#4277b2" stroke-width="3" marker-end="url(#arrow)"/>
+<rect x="90" y="320" width="1320" height="130" rx="14" fill="#ffffff" stroke="#b7c9df"/>
+<text x="120" y="355" font-size="24" font-weight="700" fill="#16375a">2  安全分流与状态抽取</text>
+<text x="120" y="390" font-size="20" fill="#334155">硬规则急症/高风险直达；严格纯寒暄/能力咨询固定回复；均不调用模型。</text>
+<text x="120" y="420" font-size="20" fill="#334155">其余输入由 SafetyIntent 同判领域/风险；低置信或异常固定澄清。</text>
+<path d="M750 454 v28" stroke="#4277b2" stroke-width="3" marker-end="url(#arrow)"/>
+<rect x="90" y="495" width="1320" height="130" rx="14" fill="#ffffff" stroke="#b7c9df"/>
+<text x="120" y="530" font-size="24" font-weight="700" fill="#16375a">3  两种模式共用一个 SDK 工具循环</text>
+<text x="120" y="565" font-size="20" fill="#334155">fast_rag：2 个业务工具；无工具结果时请求 medical_rag_search。</text>
+<text x="120" y="595" font-size="20" fill="#334155">agentic：8 个业务工具；无工具结果时请求 assess_information_gaps。</text>
+<path d="M750 629 v28" stroke="#4277b2" stroke-width="3" marker-end="url(#arrow)"/>
+<rect x="90" y="670" width="1320" height="130" rx="14" fill="#ffffff" stroke="#b7c9df"/>
+<text x="120" y="705" font-size="24" font-weight="700" fill="#16375a">4  wrap_model_call → MedicalModel</text>
+<text x="120" y="740" font-size="20" fill="#334155">当前 HumanMessage 及之后消息 + build_context(State)；主模型有限重试。</text>
+<text x="120" y="770" font-size="20" fill="#334155">agentic 有 RAG 消息且无证据检查消息时请求 check_evidence_sufficiency，其余不指定。</text>
+<path d="M750 804 v28" stroke="#4277b2" stroke-width="3" marker-end="url(#arrow)"/>
+<rect x="90" y="845" width="1320" height="160" rx="14" fill="#ffffff" stroke="#b7c9df"/>
+<text x="120" y="880" font-size="24" font-weight="700" fill="#16375a">5  SDK 工具执行与 before_model 回环</text>
+<text x="120" y="915" font-size="20" fill="#334155">模型提出 tool_calls → wrap_tool_call 复核工具名 → 允许执行或返回拒绝 ToolMessage。</text>
+<text x="120" y="945" font-size="20" fill="#334155">新工具结果批次 → 记录轨迹、查询、计划、待问字段；不足 6 批返回步骤 4。</text>
+<text x="120" y="975" font-size="20" fill="#334155">达到 6 批 → 固定收束并结束模型循环；模型直接给最终消息也结束循环。</text>
+<path d="M750 1009 v28" stroke="#4277b2" stroke-width="3" marker-end="url(#arrow)"/>
+<rect x="90" y="1050" width="1320" height="160" rx="14" fill="#ffffff" stroke="#b7c9df"/>
+<text x="120" y="1085" font-size="24" font-weight="700" fill="#16375a">6  after_agent 与返回</text>
+<text x="120" y="1120" font-size="20" fill="#334155">普通结果和批次收束 → 本轮 RAG 来源、无引用分支、逐句规则审核与免责声明。</text>
+<text x="120" y="1150" font-size="20" fill="#334155">固定急诊/拒答/寒暄/非医疗/澄清回复跳过改写；异常时不保证后置审核。</text>
+<text x="120" y="1180" font-size="20" fill="#334155">CLI/Streamlit 显式 SQLite；Agent Server 导出对象不注入本地 checkpointer。</text>
+<text x="90" y="1255" font-size="20" fill="#475569">工具选择请求依赖供应商协议；ready 值没有硬编码后续动作；6 批不是 token、时间或费用预算。</text>
+<text x="90" y="1287" font-size="20" fill="#475569">上传先于安全分流，目录/磁盘异常仍可中断；路径隔离不等于用户授权。</text></g></svg>

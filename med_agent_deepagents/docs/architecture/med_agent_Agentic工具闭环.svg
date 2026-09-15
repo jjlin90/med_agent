@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="1230" viewBox="0 0 1440 1230">
+<defs><marker id="arrow" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0 0L8 4L0 8" fill="none" stroke="#648198" stroke-width="1.5"/></marker></defs>
+<rect width="1440" height="1230" fill="#f4f7fb"/>
+<style>text{font-family:"Microsoft YaHei","Noto Sans CJK SC",sans-serif;fill:#21354b}.title{font-size:34px;font-weight:700}.subtitle{font-size:18px;fill:#596f82}.label{font-size:23px;font-weight:700}.body{font-size:18px}.tag{font-size:16px;fill:#34697d}</style>
+<text x="64" y="65" class="title">Deep Agents · Agentic 业务工具闭环</text>
+<text x="64" y="102" class="subtitle">主模型决定下一步，业务函数执行与校验；框架承担循环编排</text>
+<rect x="64" y="145" width="620" height="170" rx="15" fill="#eaf4fa" stroke="#d3dee8" stroke-width="1.5"/>
+<text x="86" y="181" class="label">模型请求适配</text>
+<text x="86" y="214" class="body">MedicalModel：延迟加载原供应商模型</text>
+<text x="86" y="243" class="body">_prepare_request：系统 Prompt + 当前轮消息</text>
+<text x="86" y="272" class="body">复杂首步评估缺口；检索后要求证据检查</text>
+<text x="86" y="301" class="body">模型失败最多 2 次重试，共最多 3 次尝试</text>
+<rect x="744" y="145" width="630" height="170" rx="15" fill="#edf8f4" stroke="#d3dee8" stroke-width="1.5"/>
+<text x="766" y="181" class="label">状态与权限</text>
+<text x="766" y="214" class="body">DeepMedicalState 保留医疗画像与本轮字段</text>
+<text x="766" y="243" class="body">wrap_tool_call 按模式校验工具白名单</text>
+<text x="766" y="272" class="body">SDK 的 execute / task / 文件工具不放行</text>
+<text x="766" y="301" class="body">业务计划仍用 agent_plan，不替换成 todos</text>
+<path d="M684 230 L744 230" stroke="#648198" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+<path d="M370 315 L370 355" stroke="#648198" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+<path d="M1040 315 L1040 355" stroke="#648198" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+<rect x="64" y="355" width="630" height="106" rx="15" fill="#ffffff" stroke="#d3dee8" stroke-width="1.5"/>
+<text x="86" y="391" class="label">1  medical_rag_search</text>
+<text x="86" y="424" class="body">混合检索 + 来源；重复查询反馈</text>
+<rect x="744" y="355" width="630" height="106" rx="15" fill="#ffffff" stroke="#d3dee8" stroke-width="1.5"/>
+<text x="766" y="391" class="label">2  get_department_recommend</text>
+<text x="766" y="424" class="body">症状规则投票 + 儿童 / 老年通道</text>
+<rect x="64" y="490" width="630" height="106" rx="15" fill="#ffffff" stroke="#d3dee8" stroke-width="1.5"/>
+<text x="86" y="526" class="label">3  read_medical_doc</text>
+<text x="86" y="559" class="body">仅当前 thread 上传目录；字段注入</text>
+<rect x="744" y="490" width="630" height="106" rx="15" fill="#ffffff" stroke="#d3dee8" stroke-width="1.5"/>
+<text x="766" y="526" class="label">4  assess_information_gaps</text>
+<text x="766" y="559" class="body">缺口评估；asked_questions 跨轮去重</text>
+<rect x="64" y="625" width="630" height="106" rx="15" fill="#ffffff" stroke="#d3dee8" stroke-width="1.5"/>
+<text x="86" y="661" class="label">5  build_visit_preparation</text>
+<text x="86" y="694" class="body">症状与就医准备清单；无诊断 / 处方</text>
+<rect x="744" y="625" width="630" height="106" rx="15" fill="#ffffff" stroke="#d3dee8" stroke-width="1.5"/>
+<text x="766" y="661" class="label">6  create_task_plan</text>
+<text x="766" y="694" class="body">原分步计划创建与结构返回</text>
+<rect x="64" y="760" width="630" height="106" rx="15" fill="#ffffff" stroke="#d3dee8" stroke-width="1.5"/>
+<text x="86" y="796" class="label">7  update_task_progress</text>
+<text x="86" y="829" class="body">计划存在 / 步骤 ID / 状态枚举校验</text>
+<rect x="744" y="760" width="630" height="106" rx="15" fill="#ffffff" stroke="#d3dee8" stroke-width="1.5"/>
+<text x="766" y="796" class="label">8  check_evidence_sufficiency</text>
+<text x="766" y="829" class="body">注入本轮真实证据；反馈 missing 项</text>
+<rect x="64" y="930" width="1310" height="135" rx="15" fill="#eaf4fa" stroke="#d3dee8" stroke-width="1.5"/>
+<text x="86" y="966" class="label">执行结果 → before_model 记账 → 再决策</text>
+<text x="86" y="999" class="body">ToolMessage 写回轨迹、attempted_queries、agent_plan、asked_questions</text>
+<text x="86" y="1028" class="body">新结果按批次记录一次；达到原轮数预算后停止；最终统一 output_check</text>
+<path d="M370 866 L370 930" stroke="#648198" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+<path d="M1040 866 L1040 930" stroke="#648198" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+<path d="M64 995 L30 995 L30 225 L64 225" stroke="#648198" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+<rect x="64" y="1105" width="1310" height="82" rx="15" fill="#fff0e8" stroke="#d3dee8" stroke-width="1.5"/>
+<text x="86" y="1141" class="label">验证边界</text>
+<text x="86" y="1174" class="body">规则与工具闭环可测试；模型 tool_choice 遵循、语义证据覆盖和医学质量仍需实际评估。</text>
+</svg>

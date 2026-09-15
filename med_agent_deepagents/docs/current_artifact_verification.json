@@ -1,0 +1,78 @@
+{
+  "generated_on": "2026-09-15",
+  "files": [
+    {
+      "name": "00_阅读入口.md",
+      "bytes": 1731,
+      "sha256": "27462f25ef6c26496ea8d526678857a1650e4e4342a824b05acbea233b2465b3",
+      "mirror_equal": true,
+      "banned_hits": [],
+      "code_fences": 0
+    },
+    {
+      "name": "_这是当前正确版本.txt",
+      "bytes": 292,
+      "sha256": "f65b2da23739491bfa723525382db0cabdfb6764d23265bed5d9b45c7554846b",
+      "mirror_equal": true,
+      "banned_hits": []
+    },
+    {
+      "name": "med_agent_Agentic工具闭环.svg",
+      "bytes": 4964,
+      "sha256": "361547e96965ab51257e0f57208e59ba81e122341f7b4d1c87b9c697f68f396f",
+      "mirror_equal": true,
+      "banned_hits": [],
+      "svg_xml": "ok"
+    },
+    {
+      "name": "med_agent_双模式问答流程.svg",
+      "bytes": 4843,
+      "sha256": "96a110032a38fae13fd62a8beb9e495761b0c47107c86e2da273c8abfa3546f8",
+      "mirror_equal": true,
+      "banned_hits": [],
+      "svg_xml": "ok"
+    },
+    {
+      "name": "med_agent_逐点精讲.md",
+      "bytes": 132302,
+      "sha256": "723dc21e1d16c41465cc85c596f4696785d8fc9022dad58f5f5af097a4a31629",
+      "mirror_equal": true,
+      "banned_hits": [],
+      "code_fences": 132
+    },
+    {
+      "name": "med_agent_项目理解与面试合订本.md",
+      "bytes": 191215,
+      "sha256": "e43825544a0286d901fc86bde11aedd7c3f14e22de32554253a1b652413bb266",
+      "mirror_equal": true,
+      "banned_hits": [],
+      "code_fences": 154
+    },
+    {
+      "name": "med_rag_agent_面试全解.md",
+      "bytes": 106858,
+      "sha256": "838224b2451ef3037892fd9a014051bcac03b5d2b6c3cbc522b8f4a355a58e28",
+      "mirror_equal": true,
+      "banned_hits": [],
+      "code_fences": 24
+    },
+    {
+      "name": "文档核查报告.md",
+      "bytes": 3334,
+      "sha256": "43660d4c90d83b6e00cb021363432a8fff753086f5d77e534e7eaeed46ae3cb6",
+      "mirror_equal": true,
+      "banned_hits": [],
+      "code_fences": 0
+    },
+    {
+      "name": "评估实测.md",
+      "bytes": 12185,
+      "sha256": "a7c57a82825aed3567438537f0ab059c9b43437fd75db43a84a2b8203a2a9e53",
+      "mirror_equal": true,
+      "banned_hits": [],
+      "code_fences": 0
+    }
+  ],
+  "errors": [],
+  "ok": true
+}

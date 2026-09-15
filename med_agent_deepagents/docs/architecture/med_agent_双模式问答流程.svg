@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="1360" viewBox="0 0 1440 1360">
+<defs><marker id="arrow" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0 0L8 4L0 8" fill="none" stroke="#648198" stroke-width="1.5"/></marker></defs>
+<rect width="1440" height="1360" fill="#f4f7fb"/>
+<style>text{font-family:"Microsoft YaHei","Noto Sans CJK SC",sans-serif;fill:#21354b}.title{font-size:34px;font-weight:700}.subtitle{font-size:18px;fill:#596f82}.label{font-size:23px;font-weight:700}.body{font-size:18px}.tag{font-size:16px;fill:#34697d}</style>
+<text x="64" y="65" class="title">医疗 Agent · Deep Agents 双模式完整流程</text>
+<text x="64" y="102" class="subtitle">双模式、8 个业务工具、状态、上传、审核与持久化 | 2026-09-15</text>
+<rect x="64" y="142" width="850" height="106" rx="15" fill="#ffffff" stroke="#d3dee8" stroke-width="1.5"/>
+<text x="86" y="178" class="label">01  用户请求与上传</text>
+<text x="86" y="211" class="body">CLI / Streamlit / Agent Chat UI · thread_id · txt / md / csv</text>
+<rect x="64" y="280" width="850" height="164" rx="15" fill="#eaf4fa" stroke="#d3dee8" stroke-width="1.5"/>
+<text x="86" y="316" class="label">02  before_agent：安全与语义分流</text>
+<text x="86" y="349" class="body">ingest_uploads → input_guard：安全硬规则直达</text>
+<text x="86" y="378" class="body">除严格寒暄/能力咨询外 → SafetyIntent 领域/风险双分类</text>
+<text x="86" y="407" class="body">normal 医疗 → extract → classify_task；重置本轮状态</text>
+<rect x="974" y="280" width="400" height="164" rx="15" fill="#fff0e8" stroke="#d3dee8" stroke-width="1.5"/>
+<text x="996" y="316" class="label">固定处置出口</text>
+<text x="996" y="349" class="body">emergency → 120 / 急诊提示</text>
+<text x="996" y="378" class="body">refuse → 越界说明 + 替代帮助</text>
+<text x="996" y="407" class="body">jump_to=end；保留免责声明</text>
+<path d="M914 350 L974 350" stroke="#648198" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+<path d="M480 248 L480 280" stroke="#648198" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+<path d="M480 444 L480 482" stroke="#648198" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+<path d="M480 444 L480 462 L1040 462 L1040 482" stroke="#648198" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+<rect x="64" y="482" width="625" height="145" rx="15" fill="#edf8f4" stroke="#d3dee8" stroke-width="1.5"/>
+<text x="86" y="518" class="label">03A  fast_rag</text>
+<text x="86" y="551" class="body">仅检索、科室 2 个业务工具</text>
+<text x="86" y="580" class="body">首步 tool_choice=medical_rag_search</text>
+<text x="86" y="609" class="body">随后依据结果继续或回答</text>
+<rect x="725" y="482" width="650" height="145" rx="15" fill="#eef0fc" stroke="#d3dee8" stroke-width="1.5"/>
+<text x="747" y="518" class="label">03B  agentic</text>
+<text x="747" y="551" class="body">开放全部 8 个业务工具</text>
+<text x="747" y="580" class="body">首步 assess_information_gaps</text>
+<text x="747" y="609" class="body">检索后经过 check_evidence_sufficiency</text>
+<rect x="64" y="670" width="1311" height="150" rx="15" fill="#eaf4fa" stroke="#d3dee8" stroke-width="1.5"/>
+<text x="86" y="706" class="label">04  create_deep_agent：模型 ↔ 工具循环</text>
+<text x="86" y="739" class="body">wrap_model_call 设置当轮上下文、模式白名单与首工具要求</text>
+<text x="86" y="768" class="body">SDK 执行业务工具；InjectedState 注入当前业务 State</text>
+<text x="86" y="797" class="body">wrap_tool_call 拒绝额外通用工具，执行模式白名单</text>
+<path d="M370 627 L370 670" stroke="#648198" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+<path d="M1040 627 L1040 670" stroke="#648198" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+<rect x="64" y="860" width="850" height="145" rx="15" fill="#ffffff" stroke="#d3dee8" stroke-width="1.5"/>
+<text x="86" y="896" class="label">05  before_model：执行记账与轮数上限</text>
+<text x="86" y="929" class="body">record_tool_round：轨迹 / queries / plan / asked_questions</text>
+<text x="86" y="958" class="body">每个完成的工具批次计一轮；并行调用不重复计轮</text>
+<text x="86" y="987" class="body">未到 MAX_AGENT_TOOL_ROUNDS → 继续模型循环</text>
+<rect x="974" y="860" width="400" height="145" rx="15" fill="#fff0e8" stroke="#d3dee8" stroke-width="1.5"/>
+<text x="996" y="896" class="label">达到轮数上限</text>
+<text x="996" y="929" class="body">默认 6 个工具执行批次，不是 token 限制</text>
+<text x="996" y="958" class="body">agent_limit → jump_to=end</text>
+<text x="996" y="987" class="body">停止后继续输出审核</text>
+<path d="M480 820 L480 860" stroke="#648198" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+<path d="M914 935 L974 935" stroke="#648198" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+<path d="M64 930 L32 930 L32 742 L64 742" stroke="#648198" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+<rect x="64" y="1045" width="1311" height="135" rx="15" fill="#edf8f4" stroke="#d3dee8" stroke-width="1.5"/>
+<text x="86" y="1081" class="label">06  after_agent：output_check</text>
+<text x="86" y="1114" class="body">本轮真实 RAG 来源 → 清除模型自写来源 → 缺证处理 → 违禁句审核 → 免责声明</text>
+<text x="86" y="1143" class="body">返回同样的状态字典；SQLite / 服务端 checkpoint 按 thread_id 保持会话</text>
+<path d="M480 1005 L480 1045" stroke="#648198" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+<path d="M1170 1005 L1170 1045" stroke="#648198" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+<rect x="64" y="1220" width="1311" height="96" rx="15" fill="#ffffff" stroke="#d3dee8" stroke-width="1.5"/>
+<text x="86" y="1256" class="label">没有减少业务功能</text>
+<text x="86" y="1289" class="body">底层 LangGraph 运行时提供 State、消息循环与 checkpoint</text>
+</svg>

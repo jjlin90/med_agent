@@ -53,12 +53,5 @@ review_artifacts/
 .DS_Store
 Thumbs.db
 
-# Personal resume files
-*算法工程师*.html
-
-# Local review, backup, migration, and resume artifacts
-.doc_merge/
-audit_*/
-**/bak_*/
-scripts/prepare_deepagents_migration.py
-scripts/prepare_interview_copy.py
+# Migration local environment
+.venv/
