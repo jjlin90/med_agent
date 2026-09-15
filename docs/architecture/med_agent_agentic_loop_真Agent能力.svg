@@ -24,7 +24,7 @@
   <!-- Agent node -->
   <rect x="300" y="158" width="360" height="46" rx="10" fill="url(#agBg)" stroke="#c47ad0" stroke-width="1.5"/>
   <text x="480" y="180" text-anchor="middle" fill="#e8c8ef" font-size="13" font-weight="800">Agent 节点（LLM + bind_tools）</text>
-  <text x="480" y="197" text-anchor="middle" fill="#c9a8d8" font-size="10.5">首步 tool_choice = assess_information_gaps（代码锁定）</text>
+  <text x="480" y="197" text-anchor="middle" fill="#c9a8d8" font-size="10.5">首步传 tool_choice = assess_information_gaps（执行兼容性需验证）</text>
 
   <!-- Tools panel -->
   <rect x="300" y="218" width="360" height="250" rx="12" fill="url(#loopBg)" stroke="#7aa8c8" stroke-width="1.2"/>
@@ -50,7 +50,6 @@
 
   <rect x="316" y="382" width="328" height="22" rx="6" fill="#162033" stroke="#c47ad0" stroke-width="1.6"/>
   <text x="328" y="397" fill="#e8c8ef" font-size="10">⑥ create_task_plan · ⑦ update_task_progress</text>
-  <text x="636" y="397" text-anchor="end" fill="#c47ad0" font-size="10">成功结果才写 State</text>
 
   <rect x="316" y="408" width="328" height="22" rx="6" fill="#162033" stroke="#c47ad0" stroke-width="1.6"/>
   <text x="328" y="423" fill="#e8c8ef" font-size="11">⑧ check_evidence_sufficiency</text>
@@ -99,16 +98,16 @@
   <rect x="20" y="660" width="920" height="490" rx="14" fill="#16162a" stroke="#334466" stroke-width="1"/>
   <text x="40" y="688" fill="#e0e8f0" font-size="15" font-weight="900">判定矩阵：本项目各项能力该归哪一层？</text>
 
-  <text x="40" y="722" fill="#c47ad0" font-size="13" font-weight="800">■ 真 Agent（观察依赖闭环，换更强 LLM 也做不到）</text>
+  <text x="40" y="722" fill="#c47ad0" font-size="13" font-weight="800">■ Agent 闭环支撑（观察结果进入后续决策）</text>
   <text x="40" y="746" fill="#c9b0d8" font-size="11.5">• 重复查询拦截：收到 insufficient 后换表述；attempted_queries 仅在当前请求循环内累积</text>
-  <text x="40" y="768" fill="#c9b0d8" font-size="11.5">• 显式计划与进度跟踪（P&amp;E 思路）：成功工具结果更新计划，Agent 据此调整后续动作</text>
-  <text x="40" y="790" fill="#c9b0d8" font-size="11.5">• 证据充分性自检：系统注入本轮真实 RAG 结果；agentic 至少强制检查一次，未覆盖则要求补检索</text>
-  <text x="40" y="812" fill="#c9b0d8" font-size="11.5">• 追问去重：跨轮记住"已问过什么"，否则每轮重复问同一件事</text>
+  <text x="40" y="768" fill="#c9b0d8" font-size="11.5">• 显式计划与进度跟踪：合法 plan_updated 写 State；完成状态仍由模型声明</text>
+  <text x="40" y="790" fill="#c9b0d8" font-size="11.5">• 证据覆盖检查：agentic 已有 RAG 且未检查时强制一次；补检索仍由模型决定</text>
+  <text x="40" y="812" fill="#c9b0d8" font-size="11.5">• 待问字段去重：跨用户轮记住工具选中字段；不证明问题已展示</text>
 
   <line x1="40" y1="830" x2="920" y2="830" stroke="#334466" stroke-width="1" stroke-dasharray="4,3"/>
 
   <text x="40" y="858" fill="#7aa8c8" font-size="13" font-weight="800">■ 不是 Agent（LLM / RAG / Workflow 即可，不要当成 Agent 吹）</text>
-  <text x="40" y="882" fill="#a8c8d8" font-size="11.5">• 高危/危急分流、输出审核、上传脱敏与 thread 授权 → Workflow / 规则</text>
+  <text x="40" y="882" fill="#a8c8d8" font-size="11.5">• 高危/危急分流、输出审核、上传脱敏与 thread 路径边界 → Workflow / 规则</text>
   <text x="40" y="904" fill="#a8c8d8" font-size="11.5">• 普通科普（fast_rag）→ 最小权限 RAG：首步检索，后续仅可补检索、问科室或回答</text>
   <text x="40" y="926" fill="#a8c8d8" font-size="11.5">• 症状结构化抽取 → 图节点 + 小模型（一次结构化输出，不依赖后续反馈）</text>
 
@@ -116,12 +115,12 @@
 
   <text x="40" y="972" fill="#e0c890" font-size="13" font-weight="800">面试一句话收口</text>
   <text x="40" y="998" fill="#d8c8a8" font-size="11.5">“强 LLM 能帮你把单次工具调用写得更准，但'看到工具结果后改变主意、跨轮记住自己做过什么、</text>
-  <text x="40" y="1018" fill="#d8c8a8" font-size="11.5">用真实工具结果校验证据'这三件事，是 Agent 闭环的本职，不是模型智商问题。本项目真正依赖 Agent 的，</text>
-  <text x="40" y="1038" fill="#d8c8a8" font-size="11.5">就是检索失败重试、计划执行与回改、证据自检和追问去重这四块。”</text>
+  <text x="40" y="1018" fill="#d8c8a8" font-size="11.5">让真实工具结果进入下一步决策'需要 Agent 循环与 State。本项目提供检索反馈、计划状态、</text>
+  <text x="40" y="1038" fill="#d8c8a8" font-size="11.5">证据覆盖检查和待问字段去重；下一步动作仍需评估真实模型是否正确执行。”</text>
 
   <rect x="40" y="1062" width="880" height="64" rx="10" fill="#1a2438" stroke="#5b7ba8" stroke-width="1"/>
   <text x="56" y="1084" fill="#9ab0d0" font-size="11" font-weight="700">关键代码锚点</text>
   <text x="56" y="1104" fill="#a8b8d0" font-size="10.5">medical_rag_search + State.attempted_queries：失败反馈与重复查询拦截</text>
-  <text x="56" y="1120" fill="#a8b8d0" font-size="10.5">create_task_plan / update_task_progress + record_tool_round_node：成功结果写入计划状态</text>
-  <text x="56" y="1136" fill="#a8b8d0" font-size="10.5">check_evidence_sufficiency：真实 RAG 注入 · assess_information_gaps：追问去重</text>
+  <text x="56" y="1120" fill="#a8b8d0" font-size="10.5">create_task_plan / update_task_progress + record_tool_round_node：合法工具结果写入计划状态</text>
+  <text x="56" y="1136" fill="#a8b8d0" font-size="10.5">check_evidence_sufficiency：本轮 RAG 注入 · assess_information_gaps：待问字段去重</text>
 </svg>

@@ -25,7 +25,7 @@
 
   <!-- ingest_uploads -->
   <rect x="290" y="152" width="340" height="34" rx="9" fill="#1f2a3a" stroke="#7a8ba8" stroke-width="1"/>
-  <text x="460" y="174" text-anchor="middle" fill="#a8b8d0" font-size="11.5" font-weight="700">ingest_uploads：白名单 + 通用文件名 + 直接标识脱敏 + thread 隔离</text>
+  <text x="460" y="174" text-anchor="middle" fill="#a8b8d0" font-size="11.5" font-weight="700">ingest_uploads：白名单 + 通用文件名 + 直接标识脱敏 + thread 分目录（非用户 ACL）</text>
   <line x1="460" y1="186" x2="460" y2="206" stroke="#556677" stroke-width="1.5" marker-end="url(#arr)"/>
 
   <!-- Safety Layer -->
@@ -80,7 +80,7 @@
 
   <rect x="50" y="544" width="370" height="42" rx="10" fill="#2a3a5a" stroke="#7aa6d0" stroke-width="1.5"/>
   <text x="235" y="562" text-anchor="middle" fill="#c8e0f8" font-size="12" font-weight="700">Agent：tool_choice=medical_rag_search</text>
-  <text x="235" y="578" text-anchor="middle" fill="#8aa8c8" font-size="10">代码级锁定，不靠 Prompt</text>
+  <text x="235" y="578" text-anchor="middle" fill="#8aa8c8" font-size="10">代码显式传 tool_choice；供应商执行需验证</text>
 
   <line x1="235" y1="586" x2="235" y2="608" stroke="#556677" stroke-width="1.5" marker-end="url(#arr)"/>
 
@@ -128,7 +128,7 @@
 
   <rect x="500" y="544" width="370" height="42" rx="10" fill="#3a2a5a" stroke="#c47ad0" stroke-width="1.5"/>
   <text x="685" y="562" text-anchor="middle" fill="#f0d8f8" font-size="12" font-weight="700">Agent：tool_choice=assess_information_gaps</text>
-  <text x="685" y="578" text-anchor="middle" fill="#a888c0" font-size="10">必须先评估缺口，不得直接开答</text>
+  <text x="685" y="578" text-anchor="middle" fill="#a888c0" font-size="10">请求首步评估缺口；供应商执行需验证</text>
 
   <line x1="685" y1="586" x2="685" y2="608" stroke="#985a98" stroke-width="1.5" marker-end="url(#arr)"/>
 
@@ -150,7 +150,7 @@
   <text x="600" y="739" text-anchor="middle" fill="#f0d8f8" font-size="9">build_visit_preparation</text>
   <rect x="690" y="722" width="160" height="24" rx="6" fill="#3a2a5a" stroke="#c47ad0" stroke-width="1"/>
   <text x="770" y="739" text-anchor="middle" fill="#f0d8f8" font-size="8.7">check_evidence_sufficiency</text>
-  <text x="685" y="770" text-anchor="middle" fill="#a888c0" font-size="10">缺口未补 → 一次只追问一个最关键问题</text>
+  <text x="685" y="770" text-anchor="middle" fill="#a888c0" font-size="10">缺口未补 → Prompt 要求一次只追问一个问题</text>
   <text x="685" y="788" text-anchor="middle" fill="#a888c0" font-size="10">信息充分 → 拆检索 / 改查询 / 真实证据自检 / 收束</text>
 
   <line x1="685" y1="828" x2="685" y2="852" stroke="#985a98" stroke-width="1.5" marker-end="url(#arr)"/>
@@ -209,7 +209,7 @@
 
   <!-- Final Output -->
   <rect x="280" y="1268" width="360" height="56" rx="12" fill="#1a3a2a" stroke="#81c784" stroke-width="2"/>
-  <text x="460" y="1290" text-anchor="middle" fill="#a8e6b8" font-size="14" font-weight="900">安全回答 + 真实引用 + 免责声明</text>
+  <text x="460" y="1290" text-anchor="middle" fill="#a8e6b8" font-size="14" font-weight="900">审核后回答 + 可用时附真实引用 + 免责声明</text>
   <text x="460" y="1308" text-anchor="middle" fill="#88c8a0" font-size="10">本轮工具来源为准 · 模型伪来源清除 · 安全条款末尾兜底</text>
 
   <!-- Legend -->
@@ -231,6 +231,6 @@
   <rect x="640" y="1390" width="14" height="14" rx="3" fill="#1a3a2a" stroke="#81c784"/>
   <text x="660" y="1401" fill="#a8e6b8" font-size="10">输出审核（共享·绿）</text>
 
-  <text x="40" y="1430" fill="#7a8ba8" font-size="10">关键点：规则先于模型 · 双模式分级放权 · 首步工具锁定 · 6 轮上限 · RAG 真实引用 · 75 项自动化测试通过</text>
+  <text x="40" y="1430" fill="#7a8ba8" font-size="10">关键点：规则先于模型 · 双模式分级放权 · 首步 tool_choice 请求 · 6 轮上限 · RAG 来源审核 · 77 项离线测试基线</text>
 
 </svg>

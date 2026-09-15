@@ -56,7 +56,7 @@ def ingest_uploads_node(state: MedicalAgentState, config):
     files = state.get("upload_files") or []
     thread_id = str((config.get("configurable") or {}).get("thread_id") or "unscoped")
     # 把会话标识写入 State，供 read_medical_doc 通过 InjectedState 收紧读取根目录
-    # （分目录保存只解决"越出根目录"，授权访问要由 thread 标识在读取层把关——缺陷 20）。
+    # 这里只形成 current-thread 路径边界；用户身份和 thread 所有权仍需入口层另行校验。
     if not files:
         return {"current_thread_id": thread_id, "upload_errors": []}
     saved, errors = save_uploaded_files(files, thread_id)
@@ -290,7 +290,7 @@ def record_tool_round_node(state: MedicalAgentState):
             payload = None
         tool_results[getattr(m, "tool_call_id", None)] = payload
 
-    # 只接受工具实际成功返回的计划/进度，不再直接信任模型发出的调用参数。
+    # 只在工具返回 plan_created/plan_updated 后写 State；进度状态本身仍来自模型参数。
     plan = [dict(s) for s in (state.get("agent_plan") or [])]
     for m in current:
         if not isinstance(m, AIMessage):
@@ -314,8 +314,8 @@ def record_tool_round_node(state: MedicalAgentState):
                         step["status"] = status
                         step["note"] = str(returned.get("note") or "").strip()
 
-    # 一次只会建议追问一个最关键字段，因此只记录 next_question_field。
-    # 旧实现把所有 missing_fields 都标为已问，导致实际没问出口的字段永远不再追问。
+    # 工具一次只建议一个字段，因此仅记录 next_question_field；这表示“已建议”，
+    # 不证明后续 AIMessage 已把问题展示给用户。
     asked = list(state.get("asked_questions") or [])
     for m in current:
         if isinstance(m, ToolMessage) and getattr(m, "name", "") == "assess_information_gaps":
@@ -428,7 +428,7 @@ def output_check_node(state: MedicalAgentState):
     clean, violations = audit_output(raw_content)
     for v in violations:
         logger.warning("输出审核拦截：%s", v)
-    # 同 id 覆盖原消息，保证存入 checkpoint 的就是审核后的安全文本
+    # 同 id 覆盖最新 State 中的原消息；中间 checkpoint 历史是否保留审核前状态取决于运行时。
     safe_msg = AIMessage(id=last.id, content=clean, additional_kwargs=last.additional_kwargs)
     return {"messages": [safe_msg], "citations": citations}
 

@@ -17,7 +17,7 @@ pip install -r requirements.txt
 ## 快速开始
 
 ```bash
-# 1. 构建知识库索引（全量约 2600 主题，首次构建较久；支持断点续建）
+# 1. 构建知识库索引（主题数取决于 MSD_DATA_PATH 中的元数据；首次构建可能较久）
 python main.py --build
 
 # 2. 交互对话
@@ -58,9 +58,9 @@ pnpm dev
 ```
 
 前端默认连接 `http://localhost:2024` 的 `agent` 图，支持 LangGraph thread 历史、
-流式状态和 `upload_files`。上传的 txt/md/csv 文件会按 thread ID 隔离保存到
+流式状态和 `upload_files`。上传的 txt/md/csv 文件会按 thread ID 分目录保存到
 `user_upload/<thread_id>/`，保存前会遮盖常见直接身份标识，再由受限文件工具读取。
-脱敏只是防护层，上传前仍应人工删除无关个人信息。
+这里的 thread 目录边界不等于登录鉴权或用户/租户 ACL；脱敏也只是防护层，上传前仍应人工删除无关个人信息。
 
 ## 项目结构
 
@@ -69,10 +69,10 @@ med_agent/
 ├── main.py                    # 入口：对话 / 构建索引 / 评估
 ├── pyproject.toml             # Agent Server 可编辑安装与包发现配置
 ├── langgraph.json             # 统一 graph ID、依赖与自定义 HTTP 应用
-├── evaluate.py                # 评估脚本（Precision/Recall/F1、高危拦截率）
+├── evaluate.py                # 快速/完整评估与 Agentic 轨迹指标
 ├── data/
 │   ├── eval_dataset.json      # 测试数据集（普通/复杂/高危/特殊人群 case）
-│   └── checkpoints.sqlite     # LangGraph 会话持久化（按 thread_id 隔离）
+│   └── checkpoints.sqlite     # 本地运行后生成；LangGraph 会话 checkpoint
 ├── docs/
 │   ├── architecture/          # 双模式流程与 Agentic 工具循环图
 │   └── evaluation-baseline.md # 可公开复现的合成开发集评估基线
@@ -85,20 +85,20 @@ med_agent/
 │   ├── state.py               # MedicalAgentState 自定义状态
 │   ├── graph.py               # LangGraph 主流程（拦截→抽取→Agent→输出审核）
 │   ├── api.py                 # Agent Server 自定义健康检查/能力说明接口
-│   ├── uploads.py             # Agent Chat UI 上传协议与 thread 隔离落盘
+│   ├── uploads.py             # Agent Chat UI 上传协议与 thread 分目录落盘
 │   ├── tools.py               # @tool 工具集
 │   ├── secure_store.py        # 会话健康数据 Fernet 加密存储
 │   └── rag/
-│       ├── html_parser.py     # 默沙东 HTML 解析 + 按章节切片(512-1024)
+│       ├── html_parser.py     # 默沙东 HTML 解析 + 按章节切片（目标 400-1024）
 │       ├── build_index.py     # Chroma 向量库 + BM25 语料构建
 │       └── retriever.py       # 混合检索（向量+BM25+RRF+Rerank 重排）
-└── user_upload/               # 用户上传检验报告文本目录（read_medical_doc 仅允许读这里）
+└── user_upload/               # 运行时上传目录；read_medical_doc 收紧到当前 thread 子目录
 ```
 
 ## Agent 流程（LangGraph）
 
 ```
-START → ingest_uploads（解析 UI 的 upload_files，按 thread 隔离）
+START → ingest_uploads（解析 UI 的 upload_files，按 thread 分目录）
           → input_guard（兼容纯文本与 LangGraph content blocks）
           ├─ 危急信号 → emergency（零模型 120/急诊提示+免责声明）→ END
           ├─ 高危(求诊断/求开药) → refuse（风险提示+替代帮助+免责声明）→ END
@@ -122,7 +122,7 @@ START → ingest_uploads（解析 UI 的 upload_files，按 thread 隔离）
 
 ### 为什么现在需要 Agent
 
-普通科普仍走 `fast_rag`：首步强制检索，后续只允许补检索、调用科室工具或回答。以下开放式任务进入
+普通科普仍走 `fast_rag`：代码向模型适配层传入首步 `tool_choice=medical_rag_search`，后续只允许补检索、调用科室工具或回答；兼容供应商是否严格执行 `tool_choice` 需要实测。以下开放式任务进入
 `agentic` 模式，工具顺序和调用次数由执行结果动态决定：
 
 - 结合上传报告，先整理报告，再分别检索其中的医学概念；
@@ -143,21 +143,21 @@ START → ingest_uploads（解析 UI 的 upload_files，按 thread 隔离）
 
 | 工具 | 说明 |
 |---|---|
-| `medical_rag_search` | 检索默沙东权威知识库，**医学事实性回答必须优先调用**，无资料时如实告知，禁止编造 |
+| `medical_rag_search` | 检索默沙东知识库；工具说明要求医学事实回答优先调用，无资料时如实告知。成功返回带来源文本，partial/insufficient/duplicate_query 返回 status JSON |
 | `get_department_recommend` | 症状→科室确定性规则映射（含危急信号转急诊、儿童/老年通道） |
 | `symptom_extract` | 仅供离线评测复用；在线抽取由图中的 `extract` 节点完成，不绑定主 Agent |
 | `read_medical_doc` | 读取 `user_upload/` 内的检验报告/病历文本（限白名单后缀，防路径穿越） |
 | `assess_information_gaps` | 复杂任务第一步评估信息缺口，由 Agent 决定补问或继续执行 |
 | `build_visit_preparation` | 汇总多轮信息为非诊断性的就医沟通摘要和准备清单 |
 | `create_task_plan` | 仅为至少 3 个独立步骤的复杂任务建立计划 |
-| `update_task_progress` | 根据工具成功结果更新计划状态，拒绝结果不会写入 State |
+| `update_task_progress` | 校验计划是否存在、步骤 ID 与状态枚举后返回更新结果；目标状态和备注由模型参数提供 |
 | `check_evidence_sufficiency` | 从本轮真实 RAG 工具消息注入证据并检查子问题覆盖，不接受模型自填证据摘要 |
 
 ## 检索方案（RAG）
 
 1. **切片**：按主题 h1/h2/h3 章节层级切分，目标块大小 400-1024 字符；无法继续合并的短小节可低于 400 字符，长段落保留约 80 字符重叠；
 2. **嵌入**：使用 BGE-M3（`BAAI/bge-m3`，SiliconFlow API）生成稠密向量；当前项目尚未完成与通用 embedding 的同集对比实验；
-3. **向量库**：Chroma（原型够用；生产可平移 Milvus，检索层接口不变）；
+3. **向量库**：Chroma（当前本地原型）；迁移 Milvus/pgvector 属于后续方案，需要实现并验证新的存储适配，不能声称现有接口无需改动；
 4. **混合检索**：向量召回 + jieba 分词 BM25 关键词召回 → RRF 融合；
 5. **重排**：BGE-reranker-v2-m3（`.env` 中 `ENABLE_RERANK=true` 开启，失败自动降级）。
 
@@ -170,7 +170,7 @@ START → ingest_uploads（解析 UI 的 upload_files，按 thread 隔离）
 | 工具约束 | 无任何诊断/开药工具；科室推荐为确定性规则 |
 | 输出审核 | 后置违禁词检测（"确诊为你得了…/建议服用…mg"），命中整句剔除并补风险提示 |
 | 免责声明 | 回答末尾强制附带 |
-| 隐私 | 普通运行日志脱敏并轮转；会话审计日志默认不落盘，显式开启后仅保存最小化、脱敏且 Fernet 加密的记录；禁止用于训练 |
+| 隐私 | 普通运行日志脱敏并轮转；会话审计日志默认不落盘，显式开启后仅保存最小化、脱敏且 Fernet 加密的记录；Prompt 声明上传内容仅用于当前会话，但代码本身不能约束外部模型供应商的数据处理政策 |
 
 ## 配置（.env）
 
@@ -178,8 +178,8 @@ START → ingest_uploads（解析 UI 的 upload_files，按 thread 隔离）
 EMBEDDING_MODEL / MSD_DATA_PATH / ENABLE_RERANK / MAX_AGENT_TOOL_ROUNDS` 等。`.env` 含密钥，不要提交到版本库。
 
 普通运行日志默认写入项目根目录下的 `logs/med_agent.log`，单文件默认 5 MB、保留 5 个备份，
-并在写入前遮盖常见直接标识符。可通过 `ENABLE_FILE_LOG / LOG_PATH / LOG_LEVEL /
-LOG_MAX_BYTES / LOG_BACKUP_COUNT` 调整。它不会记录原始用户输入；需要会话审计时，另行显式开启
+项目配置的控制台和文件 handler 会在格式化时遮盖常见直接标识符。可通过 `ENABLE_FILE_LOG / LOG_PATH / LOG_LEVEL /
+LOG_MAX_BYTES / LOG_BACKUP_COUNT` 调整。当前项目代码不主动记录原始用户输入，但正则脱敏不等于完整匿名化；需要会话审计时，另行显式开启
 `ENABLE_SECURE_SESSION_LOG=true`，审计记录会加密写入 `data/sessions.enc`。
 
 ## 公开发布前检查
@@ -198,8 +198,8 @@ python -m unittest discover -s tests -v
 
 ## 评估口径
 
-- `python -m unittest discover -s tests -v` 当前执行 75 项不依赖真实外部模型的自动化测试；
-- `python evaluate.py` 使用合成开发集执行快速回归，当前覆盖 13 条高危规则、7 条症状抽取和 14 条科室路由；
+- `python -m unittest discover -s tests -v` 当前执行 77 项不依赖真实外部模型的自动化测试；
+- `python evaluate.py` 使用合成开发集执行快速回归，当前覆盖 13 条高危规则、7 条症状抽取和 14 条科室路由；其中症状抽取会调用小模型，需要有效模型配置；
 - `python evaluate.py --full` 会调用真实模型和本地知识库，追加知识覆盖与 9 条 Agentic 场景轨迹评估；
 - 小样本开发集结果仅用于回归，不能解释为临床准确率或线上生产效果。公开基线见 [评估基线](docs/evaluation-baseline.md)。
 

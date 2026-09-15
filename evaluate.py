@@ -241,9 +241,9 @@ def compute_agentic_metrics(case: dict, trace: dict) -> dict:
     """依据单条 agentic 任务的轨迹计算下列指标：
 
     - completion：是否同时满足关键概念覆盖且不出现禁用词；
-    - tool_rounds：agent 实际发出的工具调用轮数（去重；
+    - tool_rounds：agent 实际发出的 tool call 条数（字段名保留历史命名）；
     - duplicate_query：归一化后 attempted_queries 是否出现重复；
-    - clarification_rounds：assess_information_gaps 触发的追问轮数；
+    - clarification_rounds：assess_information_gaps 调用次数，不证明问题已展示；
     - tool_coverage：应调用的最小工具集合被覆盖的比例。
     """
     tool_calls = trace["tool_calls"]
@@ -438,14 +438,14 @@ def main(full: bool | None = None):
             f"- 完成率（关键概念覆盖≥50% 且不出现禁用词）：**{s['completion_rate']:.0%}**"
             f"（{s['total']} 例 agentic 任务）"
         )
-        report.append(f"- 平均工具轮数：**{s['avg_tool_rounds']:.1f}**")
+        report.append(f"- 平均工具调用数：**{s['avg_tool_rounds']:.1f}**")
         report.append(f"- 重复检索率：**{s['duplicate_query_rate']:.0%}**")
         report.append(f"- 期望工具覆盖率：**{s['avg_tool_coverage']:.0%}**")
-        report.append(
-            f"- 平均追问轮数（assess_information_gaps 触发）：**{s['avg_clarification_rounds']:.1f}**"
-        )
+        report.append(f"- 平均缺口评估调用数：**{s['avg_clarification_rounds']:.1f}**")
         report.append("")
-        report.append("| 任务 | 用例 | 完成 | 工具轮 | 重复 | 工具覆盖 | 追问 | 缺概念 | 违禁 |")
+        report.append(
+            "| 任务 | 用例 | 完成 | 工具调用 | 重复 | 工具覆盖 | 缺口评估 | 缺概念 | 违禁 |"
+        )
         report.append("|---|---|---|---|---|---|---|---|---|")
         for case in r5["per_case"]:
             m = case["metrics"] or {}

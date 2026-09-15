@@ -10,7 +10,7 @@ Open a private security advisory in the GitHub repository. Do not include real p
 
 - Operational logs are enabled by default, redact common direct identifiers, rotate by size, and must not intentionally record raw user input.
 - Encrypted session audit logging is disabled by default and must be enabled explicitly.
-- Uploaded text is stored under a thread-scoped directory with a generic filename and common direct identifiers redacted.
+- Uploaded text is stored under a thread-scoped directory with a generic filename and common direct identifiers redacted. This path boundary is not user authentication or a tenant ACL; production use needs server-side ownership checks.
 - Runtime uploads, indexes, checkpoints, encryption keys, operational logs, and encrypted audit logs are excluded from version control.
 - Redaction is a safety layer, not a guarantee of full anonymization. Review every file before publication.
 

@@ -77,11 +77,11 @@ def medical_rag_search(
 ) -> str:
     """检索默沙东诊疗手册（大众版）权威医学知识库。回答任何医学事实性内容（疾病、症状、检查、治疗科普）之前，必须优先调用本工具；知识库没有的内容要如实告知用户，禁止编造。
 
-    返回可能是三种状态，必须按状态采取不同动作：
-    - status=ok：正常资料，可基于其回答，并引用来源；
+    返回形态如下，调用方应据此采取不同动作：
+    - 充分命中：直接返回带“（来源：...）”的资料文本，不包含 status 字段；
     - status=partial：命中但条数偏少，应补充一个不同表述的查询再检索一次；
     - status=insufficient：未命中，必须换表述或拆分后重试，禁止重复相同 query；
-    - status=duplicate_query：该查询本轮已试过且未命中，必须换一个表述。
+    - status=duplicate_query：该查询本轮已试过且未命中，必须换一个表述；索引未就绪时则返回普通提示文本。
 
     Args:
         query: 检索问题，使用医学术语描述，例如 "2型糖尿病的常见症状"、"血常规检查项目含义"
@@ -92,7 +92,7 @@ def medical_rag_search(
         return "知识库尚未构建。请先运行 python main.py --build 构建索引，再回答医学内容。"
 
     top_k = max(1, min(top_k, 10))
-    # 重复查询拦截：同一 query 未命中后再调一次是纯粹的预算浪费，且会耗尽本轮轮数。
+    # 重复查询拦截：record_tool_round 会记录本轮发起过的所有 query；归一化后相同即拦截。
     attempted = [q for q in ((state or {}).get("attempted_queries") or []) if q]
     if _normalize_query(query) in {_normalize_query(q) for q in attempted}:
         return json.dumps(
@@ -210,7 +210,7 @@ def read_medical_doc(
 ) -> str:
     """读取当前会话（thread_id）上传目录下的检验报告/病历文本文件（支持 txt/md/csv）。整理解读报告、病历资料时使用。
 
-    只能读取"当前会话"上传的文件；其他会话（其他 thread_id）的文件会被拒绝——按目录保存不等于授权访问（缺陷 20 修复）。
+    只能读取 State 中 current_thread_id 对应目录的文件；其他目录路径会被拒绝。该路径边界不等于用户身份认证或 tenant ACL。
     读取根目录被收紧为 user_upload/{current_thread_id}/，与保存时使用的子目录一致。
 
     Args:
@@ -225,8 +225,8 @@ def read_medical_doc(
         target = (_UPLOAD_ROOT / file_name).resolve()
     else:
         target = (allowed_root / file_name).resolve()
-    # 只允许读取当前会话子目录，杜绝跨会话读取（路径穿越防护只解决越出根目录，
-    # thread 授权解决根目录内"哪些文件属于当前调用方"）。
+    # 只允许读取 State 指定的当前会话子目录；这解决路径边界，
+    # 不验证调用者是否拥有该 thread。
     if target != allowed_root and allowed_root not in target.parents:
         return f"读取被拒绝：只能访问当前会话（{safe_thread}）上传目录内的文件。"
     if target.suffix.lower() not in _ALLOWED_SUFFIXES:
@@ -289,7 +289,8 @@ def assess_information_gaps(
     if goal == "comparison" and not symptoms and not has_uploaded_document:
         gaps.append(("comparison_target", "请说明要对比的两个概念、检查项目或资料名称。"))
 
-    # 追问去重：已问过的字段不再重复问。否则多轮收集信息会变成车轱辘话，
+    # 待问字段去重：工具已选择过的字段不再重复建议。
+    # 是否真正问出口由后续 AIMessage 决定。
     # 既损伤体验，又白白消耗本就有限的工具轮数。
     asked = {str(a).strip() for a in ((state or {}).get("asked_questions") or []) if a}
     missing = [field for field, _ in gaps]

@@ -11,11 +11,13 @@
 | 症状实体抽取 | 7 | Precision/Recall/F1 = 1.00 | 小样本、同分布开发回归 |
 | 科室规则路由 | 14 | 14/14 | 仅覆盖当前规则表中的代表性用例 |
 
+高危规则和科室路由是本地确定性逻辑；症状实体抽取通过 `symptom_extract` 调用小模型。表中抽取结果是一次已保存运行的开发基线，会随模型、供应商和提示词变化，不是无需模型即可复现的固定结果。
+
 ## 自动化测试
 
-`python -m unittest discover -s tests -v` 当前执行 75 项测试：
+`python -m unittest discover -s tests -v` 当前执行 77 项测试：
 
-- `tests/test_core.py`：32 项；
+- `tests/test_core.py`：34 项；
 - `tests/test_agent_capabilities.py`：26 项；
 - `tests/test_agentic_eval.py`：15 项；
 - `tests/test_logging_config.py`：2 项。
@@ -26,7 +28,7 @@
 ## Agentic 评估状态
 
 项目已准备 9 条合成 Agentic 场景数据，覆盖报告整理、概念对比和就医准备，
-并定义完成状态、工具轮数、重复检索、工具覆盖、追问轮数和计划步骤数 6 项轨迹指标。
+并定义完成状态、工具调用条数、重复检索、工具覆盖、缺口评估调用次数和计划步骤数 6 项轨迹指标。代码字段仍名为 `tool_rounds` 和 `clarification_rounds`，但前者按每个 tool call 计数（并行调用也分别计数），后者按 `assess_information_gaps` 调用计数，并不证明问题已实际展示给用户。`plan_steps` 在逐例 metrics 中计算，当前报告汇总区未输出。
 
 运行 `python evaluate.py --full` 时会调用真实模型和本地知识库生成完整报告。
 在保存并复核完整运行结果之前，不宣称 Agentic 完成率、线上效果或真实用户收益。

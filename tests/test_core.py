@@ -64,6 +64,8 @@ class ComplianceTests(unittest.TestCase):
     def test_emergency_detection(self):
         for text in (
             "突然剧烈胸痛",
+            "我胸痛得厉害，是不是心梗？该吃什么药？",
+            "我是不是心肌梗死",
             "呼吸困难",
             "意识不清",
             "误食纽扣电池",
@@ -71,6 +73,11 @@ class ComplianceTests(unittest.TestCase):
         ):
             with self.subTest(text=text):
                 self.assertTrue(detect_emergency(text))
+
+    def test_emergency_rules_do_not_block_general_heart_attack_education(self):
+        for text in ("心梗有哪些常见症状", "什么是心肌梗死"):
+            with self.subTest(text=text):
+                self.assertFalse(detect_emergency(text))
 
     def test_output_audit_removes_diagnosis_and_dose(self):
         text = "您可能得了胃炎。建议服用某药片，每日一次。"
@@ -221,6 +228,19 @@ class RoutingTests(unittest.TestCase):
         ):
             result = graph.invoke(
                 {"messages": [HumanMessage(content="突然剧烈胸痛，我该吃什么药")]}
+            )
+        self.assertTrue(result["is_emergency"])
+        self.assertTrue(result["is_high_risk"])
+        self.assertIn("立即拨打 120", result["messages"][-1].content)
+
+    def test_postposed_severe_chest_pain_takes_emergency_path(self):
+        graph = build_medical_graph()
+        with (
+            patch("medical.graph.get_llm", side_effect=AssertionError("不应调用主模型")),
+            patch("medical.graph.get_small_llm", side_effect=AssertionError("不应调用抽取模型")),
+        ):
+            result = graph.invoke(
+                {"messages": [HumanMessage(content="我胸痛得厉害，是不是心梗？该吃什么药？")]}
             )
         self.assertTrue(result["is_emergency"])
         self.assertTrue(result["is_high_risk"])

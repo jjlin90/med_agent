@@ -30,8 +30,8 @@ pnpm dev
 
 - 使用 LangGraph thread 创建、恢复历史并流式展示状态；
 - 通过 `context` 传递运行时上下文；
-- 通过 `upload_files` 传递文件，后端按 thread ID 隔离保存；
-- 仅允许上传 `.txt`、`.md`、`.csv` 文本资料，总大小不超过 10 MB；
+- 通过 `upload_files` 传递 Base64 文件块，后端按 thread ID 分目录保存；该目录边界不是用户身份认证或租户 ACL；
+- 前端按 MIME 或扩展名筛选 `.txt`、`.md`、`.csv`；后端再次校验后缀、Base64、UTF-8，并对单次提交执行单文件不超过 10 MB、累计不超过 10 MB 的限制；
 - 页面常驻医疗免责声明，后端仍会对每条回答执行独立合规审核。
 
 应用名称和免责声明在 `src/config.ts` 中调整。后端地址与 Graph ID 优先通过

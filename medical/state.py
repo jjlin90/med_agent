@@ -31,13 +31,13 @@ class MedicalAgentState(TypedDict):
     # Agent 闭环三件套：让"观察 → 改变策略"真正成立所需的运行时状态
     attempted_queries: NotRequired[list[str]]  # 本轮已尝试过的检索查询，用于拦截重复检索
     agent_plan: NotRequired[list[dict]]  # Plan-and-Execute：[{id, description, status, note}]
-    asked_questions: NotRequired[list[str]]  # 已向用户追问过的问题，跨轮避免重复追问
+    asked_questions: NotRequired[list[str]]  # 工具已选中的待问字段；不证明问题已展示
     # 与 LangGraph Agent Chat UI / 通用智能体输入协议对齐
     upload_files: NotRequired[list[dict]]  # UI 本轮提交的 base64 文件，接收后立即清空
     uploaded_files: NotRequired[list[str]]  # 当前 thread 可访问的隔离文件相对路径
     upload_errors: NotRequired[list[str]]  # 本轮文件接收错误
-    # 当前会话标识：由 ingest_uploads 从 config 写入，供 read_medical_doc 做
-    # 按 thread 的文件授权（分目录保存 != 授权访问，见缺陷 20）。
+    # 当前会话标识：由 ingest_uploads 从 config 写入，供 read_medical_doc 收紧
+    # current-thread 文件路径；它不构成用户身份或 tenant ACL。
     current_thread_id: NotRequired[str]
     context: NotRequired[dict]  # Agent Chat UI artifact/context 扩展字段
     ui: NotRequired[list]  # LangGraph UI 消息扩展字段
